@@ -309,25 +309,41 @@
     const rows = [...cart].map(([id, q]) => ({ p: byId(id), q }));
     const line = (p, right) => `<span class="s-pic ${picCls(p)}">${pic(p)}</span><span class="s-name">${p.name}</span><span class="s-qty">${right}</span>`;
     const items = [];
-    if (base) items.push(`<li>${line(base, "Incluida")}</li>`);
-    rows.forEach(({ p, q }) => items.push(`<li>${line(p, `×${q} · ${fmt(p.points * q)} pts`)}</li>`));
+    if (base) items.push(`<li>${line(base, "")}</li>`);
+    rows.forEach(({ p, q }) => items.push(`<li>${line(p, `×${q}`)}</li>`));
     $("summary").innerHTML = items.join("");
     [...$("summary").children].forEach((li, i) => { li.style.animationDelay = `${0.9 + i * 0.12}s`; });
-    $("summary-total").textContent = `${fmt(spent())} pts`;
-    $("done-title").textContent = currentName ? `Felices fiestas y feliz Navidad, ${currentName}` : "Felices fiestas y feliz Navidad";
-
-    // Caja base: los primeros regalos asoman por la caja
-    $("gb-items").innerHTML = rows.slice(0, 3).map(({ p }, i) => `<span class="gb-item ${picCls(p)}" style="--i:${i}">${pic(p)}</span>`).join("");
-    // La carta aparece después de la lista y la firma se "escribe" al final
-    const letterAt = 0.9 + items.length * 0.12 + 0.6;
-    const body = $("letter-body");
-    body.style.setProperty("--at", `${letterAt}s`);
-    body.style.setProperty("--sign", `${letterAt + 1.8}s`);
-    body.classList.remove("go"); void body.offsetWidth; body.classList.add("go");
+    $("done-greeting").textContent = currentName ? `Feliz Navidad, ${currentName}` : "Feliz Navidad";
+    startLetter((0.9 + items.length * 0.12 + 0.7) * 1000);
     show("screen-done");
     confettiOn();
   });
-  $("print").addEventListener("click", () => window.print());
+
+  // La carta se escribe letra a letra, como a mano
+  let letterRun = 0;
+  async function startLetter(delay) {
+    const run = ++letterRun, box = $("letter-body");
+    const { letter, signature } = window.CONFIG;
+    box.innerHTML = "";
+    const blocks = [...letter, signature].map((text, i, all) => {
+      const p = document.createElement("p");
+      p.className = i === all.length - 1 ? "hand sign" : "hand";
+      p.setAttribute("aria-label", text);
+      p.innerHTML = [...text].map((c) => `<span class="ch" aria-hidden="true">${c}</span>`).join("");
+      box.appendChild(p);
+      return p;
+    });
+    await wait(delay);
+    for (const p of blocks) {
+      for (const ch of p.children) {
+        if (run !== letterRun) return;
+        ch.classList.add("on");
+        if (!reduceMotion) await wait(/[.,]/.test(ch.textContent) ? 220 : 34 + Math.random() * 40);
+      }
+      if (!reduceMotion) await wait(p.classList.contains("sign") ? 0 : 450);
+    }
+    if (run === letterRun) box.classList.add("done");
+  }
 
   function confettiOn() {
     if (reduceMotion) return;

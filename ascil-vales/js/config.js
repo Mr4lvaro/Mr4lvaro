@@ -15,6 +15,14 @@ window.CONFIG = {
     "NAVIDAD": "",
   },
 
+  // Carta final: cada elemento es un párrafo que se va escribiendo. La firma se escribe al final.
+  letter: [
+    "Que estas fiestas te traigan salud, alegría y mucho cariño.",
+    "Gracias por todo lo que haces durante el año. Este regalo es nuestra forma de decirte lo importante que eres para nosotros.",
+    "Feliz Navidad y felices fiestas, con mucho cariño,",
+  ],
+  signature: "ASCIL Biopharm",
+
   // Lo que siempre lleva cada pedido (la caja base). Quita "baseBox" o ponlo a null para no mostrarla.
   baseBox: { name: "Caja de Navidad ASCIL Biopharm", emoji: "📦", img: "" },
 
