@@ -19,8 +19,9 @@ window.CONFIG = {
   // "signature" es opcional: déjalo vacío ("") para no firmar.
   letter: [
     "Que estas fiestas te traigan salud, energía y mucho cariño.",
+    "Gracias por estar este año junto a nosotros.",
   ],
-  signature: "",
+  signature: "ASCIL Biopharm",
 
   // Catálogo. Para poner foto real: añade  img: "assets/products/jamon.jpg"  (si no hay img se usa el emoji).
   // "points" = puntos que cuesta cada producto.
