@@ -353,6 +353,6 @@ h1 { margin: 0 0 10px; font-size: 2rem; color: var(--purple); letter-spacing: -.
 .hand .ch { opacity: 0; transition: opacity .12s; }
 .hand .ch.on { opacity: 1; }
 .hand.sign { font-weight: 700; font-size: 2.6rem; line-height: 1.1; margin: 4px 0 0; color: var(--purple-dark); text-align: right; }
-.letter-body.done .sign::after { content: " ❤️"; font-size: 1.5rem; animation: heartPop .6s cubic-bezier(.3,1.6,.5,1) both; display: inline-block; }
+.letter-body.done .hand:last-child::after { content: " ❤️"; font-size: 1.5rem; animation: heartPop .6s cubic-bezier(.3,1.6,.5,1) both; display: inline-block; }
 @keyframes heartPop { from { opacity: 0; transform: scale(0); } to { opacity: 1; transform: none; } }
 @media (max-width: 480px) { .letter { padding-left: 22px; padding-right: 22px; } .hand { font-size: 1.4rem; } .hand.sign { font-size: 2.2rem; } }

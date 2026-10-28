@@ -305,16 +305,10 @@
     $("basket").classList.remove("show");
     markUsed(currentCode);
 
-    const base = window.CONFIG.baseBox;
-    const rows = [...cart].map(([id, q]) => ({ p: byId(id), q }));
-    const line = (p, right) => `<span class="s-pic ${picCls(p)}">${pic(p)}</span><span class="s-name">${p.name}</span><span class="s-qty">${right}</span>`;
-    const items = [];
-    if (base) items.push(`<li>${line(base, "")}</li>`);
-    rows.forEach(({ p, q }) => items.push(`<li>${line(p, `×${q}`)}</li>`));
-    $("summary").innerHTML = items.join("");
-    [...$("summary").children].forEach((li, i) => { li.style.animationDelay = `${0.9 + i * 0.12}s`; });
-    $("done-greeting").textContent = currentName ? `Feliz Navidad, ${currentName}` : "Feliz Navidad";
-    startLetter((0.9 + items.length * 0.12 + 0.7) * 1000);
+    const greet = $("done-greeting");
+    $("done-title").textContent = currentName ? "Felices fiestas y feliz Navidad," : "Felices fiestas y feliz Navidad";
+    greet.textContent = currentName; greet.hidden = !currentName;
+    startLetter(1500);
     show("screen-done");
     confettiOn();
   });
@@ -325,9 +319,9 @@
     const run = ++letterRun, box = $("letter-body");
     const { letter, signature } = window.CONFIG;
     box.innerHTML = "";
-    const blocks = [...letter, signature].map((text, i, all) => {
+    const blocks = (signature ? [...letter, signature] : letter).map((text, i, all) => {
       const p = document.createElement("p");
-      p.className = i === all.length - 1 ? "hand sign" : "hand";
+      p.className = signature && i === all.length - 1 ? "hand sign" : "hand";
       p.setAttribute("aria-label", text);
       p.innerHTML = [...text].map((c) => `<span class="ch" aria-hidden="true">${c}</span>`).join("");
       box.appendChild(p);
