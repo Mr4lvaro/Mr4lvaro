@@ -1,5 +1,7 @@
 (() => {
   const { codes, products, pointsPerEmployee: TOTAL } = window.CONFIG;
+  const norm = (c) => c.toUpperCase().replace(/[^A-Z0-9]/g, "");
+  const codeMap = new Map(Object.entries(codes).map(([c, n]) => [norm(c), n]));
   const $ = (id) => document.getElementById(id);
   const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const fmt = (n) => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
@@ -10,7 +12,7 @@
   const markUsed = (c) => { try { localStorage.setItem(USED_KEY, JSON.stringify([...readUsed(), c])); } catch {} };
 
   const cart = new Map(); // id -> cantidad
-  let currentCode = null;
+  let currentCode = null, currentName = "";
 
   /* ---------- Navegación ---------- */
   function show(id) {
@@ -45,23 +47,36 @@
     })();
   })();
 
+  /* ---------- Guirnaldas de luces ---------- */
+  document.querySelectorAll(".lights").forEach((box) => {
+    const colors = ["#ff5a5f", "#ffd45c", "#4dd0ff", "#7ee081", "#c58cff"];
+    const n = Math.ceil(innerWidth / 44);
+    for (let i = 0; i < n; i++) {
+      const b = document.createElement("i");
+      b.style.left = `${(i + 0.5) * (100 / n)}%`;
+      b.style.top = `${4 + Math.abs(Math.sin((i / n) * Math.PI * 3)) * 14}px`;
+      b.style.setProperty("--c", colors[i % colors.length]);
+      b.style.setProperty("--t", `${(i % 5) * 0.35}s`);
+      box.appendChild(b);
+    }
+  });
+
   /* ---------- Pantalla 1: código ---------- */
-  $("pts-label").textContent = fmt(TOTAL);
   const input = $("code-input");
   input.addEventListener("input", () => { input.value = input.value.toUpperCase(); $("code-error").textContent = ""; });
 
   $("code-form").addEventListener("submit", (e) => {
     e.preventDefault();
-    const code = input.value.trim().toUpperCase();
+    const code = norm(input.value);
     const field = input.closest(".field");
     const fail = (msg) => {
       $("code-error").textContent = msg;
       field.classList.remove("shake"); void field.offsetWidth; field.classList.add("shake");
     };
     if (!code) return fail("Escribe el código de tu sobre.");
-    if (!codes.includes(code)) return fail("Código no válido. Revisa que lo hayas escrito igual que en el vale.");
+    if (!codeMap.has(code)) return fail("Código no válido. Revisa que lo hayas escrito igual que en el vale.");
     if (readUsed().includes(code)) return fail("Este código ya ha sido canjeado.");
-    currentCode = code;
+    currentCode = code; currentName = codeMap.get(code) || "";
     runRedeem();
   });
 
@@ -72,10 +87,10 @@
     // reset
     env.className = "envelope"; counter.textContent = "0"; btn.hidden = true;
     $("screen-redeem").classList.remove("burst"); $("confetti").innerHTML = "";
-    title.textContent = "Abriendo tu sobre…"; sub.textContent = "Tienes algo especial esperándote";
+    title.textContent = "Abriendo tu sobre…"; sub.textContent = "Tenemos algo especial esperándote";
     show("screen-redeem");
 
-    await wait(500);
+    await wait(700);
     env.classList.add("shake"); await wait(700);
     env.classList.remove("shake"); env.classList.add("open"); await wait(800);
     env.classList.add("rise"); await wait(700);
@@ -83,9 +98,24 @@
     $("screen-redeem").classList.add("burst");
     confetti();
     await countUp(counter, TOTAL, 1600);
-    title.textContent = `¡${fmt(TOTAL)} puntos canjeados!`;
-    sub.textContent = "Ya puedes elegir tus regalos de Navidad";
+    await swap(title, sub, `ASCIL Biopharm te da un vale regalo de ${fmt(TOTAL)} puntos`, "");
+    await wait(2600);
+    confetti();
+    await swap(title, sub, "Feliz Navidad 🎄",
+      "Desde ASCIL Biopharm te deseamos una feliz Navidad y unas felices fiestas. ¿Y para ello qué mejor forma que con esta cesta de Navidad? " +
+      `Tienes ${fmt(TOTAL)} puntos para que puedas gastarlos y escoger los regalos que tú prefieras.`);
+    await wait(900);
     btn.hidden = false; btn.focus();
+  }
+
+  // Cambia el texto con un fundido
+  async function swap(titleEl, subEl, t, st) {
+    [titleEl, subEl].forEach((e) => e.classList.add("fade-out"));
+    await wait(350);
+    titleEl.textContent = t; subEl.textContent = st;
+    [titleEl, subEl].forEach((e) => { e.classList.remove("fade-out"); e.classList.add("fade-in"); });
+    await wait(500);
+    [titleEl, subEl].forEach((e) => e.classList.remove("fade-in"));
   }
   $("redeem-continue").addEventListener("click", startShop);
 
@@ -164,20 +194,22 @@
   // Emoji volando desde el producto hasta la cesta
   function fly(srcEl) {
     if (reduceMotion) return;
-    const target = matchMedia("(max-width: 900px)").matches ? $("basket-fab") : $("basket");
+    const mobile = matchMedia("(max-width: 900px)").matches;
+    const target = mobile ? $("basket-fab") : $("basket-stage");
     const a = srcEl.getBoundingClientRect(), b = target.getBoundingClientRect();
     const el = document.createElement("span");
     el.className = "fly"; el.textContent = srcEl.textContent;
     el.style.left = a.left + "px"; el.style.top = a.top + "px";
     document.body.appendChild(el);
-    const dx = b.left + b.width / 2 - a.left - a.width / 2, dy = b.top + Math.min(b.height / 2, 120) - a.top - a.height / 2;
+    const dx = b.left + b.width / 2 - a.left - a.width / 2, dy = b.top + b.height * 0.4 - a.top - a.height / 2;
     el.animate([
       { transform: "translate(0,0) scale(1) rotate(0)", opacity: 1 },
       { transform: `translate(${dx * 0.5}px,${dy * 0.5 - 90}px) scale(1.3) rotate(160deg)`, opacity: 1, offset: 0.5 },
       { transform: `translate(${dx}px,${dy}px) scale(.35) rotate(360deg)`, opacity: .3 },
     ], { duration: 750, easing: "cubic-bezier(.5,0,.4,1)" }).onfinish = () => {
       el.remove();
-      target.classList.remove("pulse"); void target.offsetWidth; target.classList.add("pulse");
+      const bk = mobile ? target : $("basket"); bk.classList.remove("pulse"); void bk.offsetWidth; bk.classList.add("pulse");
+      const st = $("basket-stage"); st.classList.remove("wobble"); void st.offsetWidth; st.classList.add("wobble");
     };
   }
 
@@ -203,6 +235,7 @@
       li.querySelector(".b-pts").textContent = `${fmt(byId(id).points * q)} pts`;
     }
     existing.forEach((li) => li.remove());
+    renderPieces();
 
     const total = spent(), remaining = left();
     $("basket-total").textContent = `${fmt(total)} pts`;
@@ -225,6 +258,32 @@
     });
   }
 
+  // Cesta visual: una pieza (emoji) por unidad, que cae dentro de la cesta
+  const MAX_PIECES = 14;
+  const SLOTS = [14, 46, 78, 30, 62, 8, 38, 70, 22, 54, 86, 4, 48, 74]; // posición horizontal (%)
+  function renderPieces() {
+    const box = $("pieces");
+    const wanted = [];
+    for (const [id, q] of cart) for (let n = 0; n < q; n++) wanted.push(`${id}#${n}`);
+    const shown = wanted.slice(-MAX_PIECES);
+    const have = new Map([...box.children].map((el) => [el.dataset.key, el]));
+    shown.forEach((key, i) => {
+      if (have.has(key)) { have.delete(key); return; }
+      const el = document.createElement("span");
+      el.className = "piece"; el.dataset.key = key;
+      el.textContent = byId(key.split("#")[0]).emoji;
+      const slot = SLOTS[i % SLOTS.length];
+      el.style.left = `${slot}%`;
+      el.style.bottom = `${56 + Math.floor(i / 3) * 18 + (i % 2) * 8}px`;
+      el.style.setProperty("--rot", `${(i * 37) % 30 - 15}deg`);
+      el.style.zIndex = i;
+      box.appendChild(el);
+    });
+    have.forEach((el) => { el.classList.add("out"); setTimeout(() => el.remove(), 250); });
+    const extra = wanted.length - shown.length;
+    $("more").hidden = extra <= 0; $("more").textContent = `+${extra}`;
+  }
+
   $("basket-fab").addEventListener("click", () => $("basket").classList.add("show"));
   $("close-basket").addEventListener("click", () => $("basket").classList.remove("show"));
 
@@ -242,11 +301,13 @@
     $("basket").classList.remove("show");
     markUsed(currentCode);
 
-    $("summary").innerHTML = [...cart].map(([id, q]) => {
+    $("summary").innerHTML = [...cart].map(([id, q], i) => {
       const p = byId(id);
-      return `<li><span>${p.emoji}</span><span class="s-name">${p.name}</span><span class="s-qty">×${q} · ${fmt(p.points * q)} pts</span></li>`;
+      return `<li style="animation-delay:${0.5 + i * 0.12}s"><span>${p.emoji}</span><span class="s-name">${p.name}</span><span class="s-qty">×${q} · ${fmt(p.points * q)} pts</span></li>`;
     }).join("");
     $("summary-total").textContent = `${fmt(spent())} pts`;
+    $("done-title").textContent = currentName ? `Felices fiestas y feliz Navidad, ${currentName}` : "Felices fiestas y feliz Navidad";
+    $("done-lead").textContent = `Hemos registrado tu selección por un total de ${fmt(spent())} puntos. Recibirás esto:`;
     show("screen-done");
     confettiOn();
   });

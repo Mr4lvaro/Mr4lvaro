@@ -3,16 +3,17 @@ window.CONFIG = {
   company: "ASCIL Biopharm",
   pointsPerEmployee: 1000,
 
-  // Códigos de los sobres. En esta versión (sin servidor) se validan en el navegador.
-  // Para producción conviene validarlos en un backend (ver README).
-  codes: [
-    "ASCIL-0001",
-    "ASCIL-0002",
-    "ASCIL-0003",
-    "ASCIL-0004",
-    "ASCIL-0005",
-    "NAVIDAD",
-  ],
+  // Códigos de los sobres -> nombre de la persona (se usa en el mensaje final).
+  // Se validan sin distinguir mayúsculas ni guiones. Sustituir por los reales.
+  // En esta versión (sin servidor) se validan en el navegador (ver README).
+  codes: {
+    "ASCIL001": "Ana",
+    "ASCIL002": "Luis",
+    "ASCIL003": "Marta",
+    "ASCIL004": "Carlos",
+    "ASCIL005": "Lucía",
+    "NAVIDAD": "",
+  },
 
   // Catálogo: emoji = imagen provisional. Sustituir por "img" cuando haya fotos reales.
   products: [

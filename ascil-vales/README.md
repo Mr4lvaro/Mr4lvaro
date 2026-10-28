@@ -8,7 +8,7 @@ Web estática de 4 pantallas (sin dependencias, abre `index.html` o súbela a cu
 4. **Confirmación** – resumen del pedido y opción de imprimir/guardar.
 
 ## Personalizar
-Todo en `js/config.js`: puntos por empleado, códigos válidos y catálogo (nombre, emoji, puntos).
+Todo en `js/config.js`: puntos por empleado, códigos válidos (cada uno con el nombre de la persona, que sale en el mensaje final) y catálogo (nombre, emoji, puntos).
 Para fotos reales, sustituye el `emoji` por una imagen en `renderGrid()` de `js/app.js`.
 
 ## Importante

@@ -234,3 +234,89 @@ h1 { margin: 0 0 10px; font-size: 2rem; color: var(--purple); letter-spacing: -.
   body { background: #fff; }
   .card { box-shadow: none; }
 }
+
+/* ================= Ronda 2: más Navidad ================= */
+@keyframes riseIn { from { opacity: 0; transform: translateY(18px); } }
+.rise-in { animation: riseIn .7s var(--d, 0s) cubic-bezier(.2,.8,.3,1) both; }
+
+#screen-code, #screen-done { position: relative; overflow: hidden; }
+.code-card, .done-card { z-index: 2; }
+.code-card h1 { font-size: 1.7rem; line-height: 1.2; }
+.code-card .eyebrow { font-size: 1rem; margin: 14px 0 6px; }
+.btn-primary, .btn-gold { position: relative; overflow: hidden; }
+.code-card .btn-primary::after, .btn-gold::after {
+  content: ""; position: absolute; top: 0; left: -60%; width: 40%; height: 100%;
+  background: linear-gradient(100deg, transparent, rgba(255,255,255,.55), transparent);
+  transform: skewX(-20deg); animation: shine 3.2s 1.5s infinite;
+}
+@keyframes shine { 0% { left: -60%; } 40%, 100% { left: 140%; } }
+
+/* Guirnalda de luces */
+.lights { position: absolute; top: 0; left: 0; right: 0; height: 60px; z-index: 3; pointer-events: none; }
+.lights::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: #3a3a5c; opacity: .55; }
+.lights i { position: absolute; width: 13px; height: 19px; border-radius: 50% 50% 55% 55%; background: var(--c);
+  box-shadow: 0 0 14px 4px var(--c); animation: twinkle 1.8s var(--t) infinite ease-in-out; }
+.lights i::before { content: ""; position: absolute; top: -5px; left: 3px; width: 7px; height: 6px; background: #3a3a5c; border-radius: 2px; }
+@keyframes twinkle { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: .35; transform: scale(.88); } }
+
+/* Adornos flotantes */
+.floaties { position: absolute; inset: 0; z-index: 1; pointer-events: none; overflow: hidden; }
+.floaties span { position: absolute; bottom: -60px; font-size: 1.8rem; opacity: .55; animation: floatUp 14s linear infinite; }
+.floaties span:nth-child(1) { left: 8%;  animation-delay: 0s; }
+.floaties span:nth-child(2) { left: 26%; animation-delay: 4s;  font-size: 1.3rem; }
+.floaties span:nth-child(3) { left: 62%; animation-delay: 8s;  }
+.floaties span:nth-child(4) { left: 80%; animation-delay: 2s;  font-size: 1.4rem; }
+.floaties span:nth-child(5) { left: 92%; animation-delay: 10s; }
+@keyframes floatUp { to { transform: translateY(-115vh) rotate(40deg); } }
+
+/* Pantalla 2: textos */
+.redeem-title { max-width: 640px; margin: 0 auto 8px; font-size: 1.9rem; line-height: 1.2; transition: opacity .35s, transform .35s; }
+.redeem-sub { max-width: 540px; margin: 0 auto 24px; font-size: 1.05rem; line-height: 1.55; transition: opacity .35s, transform .35s; }
+.redeem-sub:empty { display: none; }
+.fade-out { opacity: 0; transform: translateY(10px); }
+.fade-in { animation: riseIn .5s both; }
+#redeem-continue { animation: riseIn .6s both, bob 2s 1s infinite; }
+@keyframes bob { 50% { transform: translateY(-5px); } }
+.envelope { scale: 1; }
+@media (max-height: 780px), (max-width: 600px) {
+  .envelope { scale: .78; margin: -20px auto 6px; }
+  .redeem-title { font-size: 1.5rem; }
+  .redeem-sub { font-size: .95rem; margin-bottom: 16px; }
+}
+
+/* Pantalla 3: cesta que se va llenando */
+.basket-stage { position: relative; height: 190px; margin: 0 22px; flex: none; }
+.basket-stage.wobble { animation: wobble .6s; transform-origin: 50% 100%; }
+@keyframes wobble { 25% { transform: rotate(-3deg) scale(1.03); } 55% { transform: rotate(2.5deg); } 80% { transform: rotate(-1deg); } }
+.handle { position: absolute; z-index: 0; left: 50%; top: 4px; width: 64%; height: 110px; transform: translateX(-50%);
+  border: 8px solid #b9803f; border-bottom: 0; border-radius: 120px 120px 0 0; box-shadow: inset 0 3px 0 rgba(255,255,255,.2); }
+.pieces { position: absolute; inset: 0; z-index: 1; }
+.piece { position: absolute; font-size: 2.1rem; line-height: 1; transform: rotate(var(--rot)); filter: drop-shadow(0 3px 3px rgba(0,0,0,.25));
+  animation: drop .8s .6s cubic-bezier(.3,1.4,.5,1) both; }
+@keyframes drop { 0% { opacity: 0; transform: translateY(-170px) rotate(0) scale(1.4); } 15% { opacity: 1; }
+  70% { transform: translateY(6px) rotate(var(--rot)) scale(.95); } 100% { opacity: 1; transform: rotate(var(--rot)); } }
+.piece.out { animation: none; transition: opacity .25s, transform .25s; opacity: 0; transform: translateY(-30px) scale(.5); }
+.wicker { position: absolute; z-index: 5; left: 3%; right: 3%; bottom: 0; height: 66px; border-radius: 6px 6px 26px 26px;
+  background:
+    repeating-linear-gradient(45deg, rgba(255,255,255,.14) 0 3px, transparent 3px 14px),
+    repeating-linear-gradient(-45deg, rgba(0,0,0,.14) 0 3px, transparent 3px 14px),
+    linear-gradient(#d29a55, #b0773a);
+  box-shadow: 0 8px 18px rgba(120,70,20,.35), inset 0 -6px 10px rgba(0,0,0,.15); }
+.wicker::before { content: ""; position: absolute; left: -2%; right: -2%; top: -6px; height: 16px; border-radius: 10px;
+  background: linear-gradient(#e0ae6c, #b9803f); box-shadow: 0 3px 5px rgba(0,0,0,.2); }
+.bow { position: absolute; z-index: 6; left: 50%; top: -18px; transform: translateX(-50%); font-size: 2.1rem; filter: drop-shadow(0 2px 2px rgba(0,0,0,.3)); animation: bowSway 3s infinite ease-in-out; }
+@keyframes bowSway { 50% { transform: translateX(-50%) rotate(6deg); } }
+.more { position: absolute; z-index: 7; right: 4%; top: 52px; background: var(--red); color: #fff; font-weight: 800; font-size: .8rem; border-radius: 99px; padding: 3px 9px; animation: pop .35s; }
+.stage-sparkle { position: absolute; z-index: 2; font-size: 1rem; animation: twinkle 2.2s infinite; }
+.stage-sparkle.s1 { left: 6%; top: 18px; }
+.stage-sparkle.s2 { right: 8%; top: 40px; animation-delay: 1s; }
+.basket-head { padding-bottom: 0; }
+.basket-head h3 { font-size: 1.1rem; }
+.basket-list { max-height: 220px; }
+.points-text strong { background: linear-gradient(90deg, var(--purple), var(--blue-deep)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+
+/* Pantalla 4 */
+.done-card h1 { font-size: 1.6rem; line-height: 1.25; }
+.summary li { animation: riseIn .5s both; }
+.wish { color: var(--red); font-weight: 600; line-height: 1.5; margin: 0 0 18px; animation: riseIn .7s 1s both; }
+.done-card { animation: riseIn .8s both; }

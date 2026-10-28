@@ -12,17 +12,19 @@
 
   <!-- PANTALLA 1 · Código -->
   <main id="screen-code" class="screen active">
+    <div class="lights" aria-hidden="true"></div>
+    <div class="floaties" aria-hidden="true"><span>🎄</span><span>⭐</span><span>🎁</span><span>❄️</span><span>🔔</span></div>
     <form class="card code-card" id="code-form" autocomplete="off" novalidate>
       <img class="logo" src="assets/logo.png" alt="ASCIL Biopharm">
-      <p class="eyebrow">🎄 Vale de Navidad 2026</p>
-      <h1>Canjea tu regalo</h1>
-      <p class="lead">Introduce el código que encontrarás dentro de tu sobre para activar tus <strong id="pts-label">1.000</strong> puntos.</p>
-      <label class="field">
+      <h1 class="rise-in" style="--d:.1s">ASCIL Biopharm te desea una feliz Navidad</h1>
+      <p class="eyebrow rise-in" style="--d:.35s">🎁 Canjea tu regalo</p>
+      <p class="lead rise-in" style="--d:.55s">Introduce el código que encontrarás dentro de tu sobre para activar tu regalo.</p>
+      <label class="field rise-in" style="--d:.75s">
         <span class="sr-only">Código del vale</span>
-        <input id="code-input" type="text" inputmode="text" placeholder="ASCIL-0000" maxlength="20" spellcheck="false" autocapitalize="characters">
+        <input id="code-input" type="text" inputmode="text" placeholder="ASCIL000" maxlength="20" spellcheck="false" autocapitalize="characters">
       </label>
       <p class="error" id="code-error" role="alert" aria-live="polite"></p>
-      <button class="btn btn-primary" type="submit">Canjear puntos</button>
+      <button class="btn btn-primary rise-in" style="--d:.95s" type="submit">Feliz Navidad 🎄</button>
     </form>
   </main>
 
@@ -42,8 +44,8 @@
         <div class="env-seal">🎁</div>
       </div>
       <h2 class="redeem-title" id="redeem-title">Abriendo tu sobre…</h2>
-      <p class="redeem-sub" id="redeem-sub">Tienes algo especial esperándote</p>
-      <button class="btn btn-gold" id="redeem-continue" hidden>Elegir mis regalos →</button>
+      <p class="redeem-sub" id="redeem-sub">Tenemos algo especial esperándote</p>
+      <button class="btn btn-gold" id="redeem-continue" hidden>Elige tus regalos →</button>
     </div>
     <div class="confetti" id="confetti"></div>
   </section>
@@ -60,17 +62,24 @@
 
     <div class="shop-body">
       <div class="catalog">
-        <h2>Elige tu selección <small>Pulsa en un producto para añadirlo</small></h2>
+        <h2>Elige tus regalos <small>Pulsa en un producto y mira cómo se llena tu cesta</small></h2>
         <div class="grid" id="grid"></div>
       </div>
 
       <aside class="basket" id="basket" aria-label="Tu cesta">
         <div class="basket-head">
-          <h3>🧺 Tu cesta</h3>
+          <h3>Tu cesta de Navidad</h3>
           <button class="close-basket" id="close-basket" aria-label="Cerrar cesta">✕</button>
         </div>
+        <div class="basket-stage" id="basket-stage" aria-hidden="true">
+          <span class="stage-sparkle s1">✨</span><span class="stage-sparkle s2">✨</span>
+          <div class="handle"></div>
+          <div class="pieces" id="pieces"></div>
+          <div class="wicker"><div class="bow">🎀</div></div>
+          <span class="more" id="more" hidden></span>
+        </div>
         <ul class="basket-list" id="basket-list"></ul>
-        <p class="basket-empty" id="basket-empty">Aún no has añadido nada.<br>¡Escoge tus favoritos!</p>
+        <p class="basket-empty" id="basket-empty">Tu cesta está vacía.<br>¡Empieza a llenarla de ilusión!</p>
         <div class="basket-foot">
           <div class="row"><span>Total</span><b id="basket-total">0 pts</b></div>
           <div class="row sub"><span>Te quedan</span><b id="basket-left">1.000 pts</b></div>
@@ -87,17 +96,20 @@
 
   <!-- PANTALLA 4 · Confirmación -->
   <section id="screen-done" class="screen">
+    <div class="lights" aria-hidden="true"></div>
+    <div class="floaties" aria-hidden="true"><span>🎄</span><span>⭐</span><span>🎁</span><span>❄️</span><span>🔔</span></div>
     <div class="card done-card">
       <div class="done-icon">🎅</div>
-      <p class="eyebrow">¡Selección confirmada!</p>
-      <h1>Felices fiestas</h1>
-      <p class="lead">Hemos registrado tu pedido. Esto es lo que recibirás:</p>
+      <p class="eyebrow">Selección confirmada</p>
+      <h1 id="done-title">Felices fiestas y feliz Navidad</h1>
+      <p class="lead" id="done-lead"></p>
       <ul class="summary" id="summary"></ul>
       <div class="summary-total"><span>Puntos canjeados</span><b id="summary-total">0</b></div>
+      <p class="wish">Esperamos que pases unas fiestas llenas de amor, cariño y buenos momentos junto a los tuyos. ❤️</p>
       <div class="actions">
         <button class="btn btn-ghost" id="print">Guardar / imprimir resumen</button>
       </div>
-      <p class="fine">Gracias por un año increíble · ASCIL Biopharm</p>
+      <p class="fine">Con mucho cariño, ASCIL Biopharm 🎄</p>
     </div>
   </section>
 
