@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>ASCIL Biopharm · Vale de Navidad</title>
   <link rel="icon" href="assets/logo.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap">
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
@@ -98,18 +100,34 @@
   <section id="screen-done" class="screen">
     <div class="lights" aria-hidden="true"></div>
     <div class="floaties" aria-hidden="true"><span>🎄</span><span>⭐</span><span>🎁</span><span>❄️</span><span>🔔</span></div>
-    <div class="card done-card">
-      <div class="done-icon">🎅</div>
-      <p class="eyebrow">Selección confirmada</p>
+    <div class="card letter done-card">
+      <div class="wax" aria-hidden="true">A</div>
+      <p class="eyebrow">✔ Selección confirmada</p>
       <h1 id="done-title">Felices fiestas y feliz Navidad</h1>
-      <p class="lead" id="done-lead"></p>
+
+      <div class="giftbox" id="giftbox" aria-hidden="true">
+        <div class="gb-items" id="gb-items"></div>
+        <div class="gb-body"></div>
+        <div class="gb-lid"></div>
+        <span class="gb-spark g1">✨</span><span class="gb-spark g2">✨</span><span class="gb-spark g3">⭐</span>
+      </div>
+
+      <p class="recv">Recibirás esto en tu caja de Navidad:</p>
       <ul class="summary" id="summary"></ul>
       <div class="summary-total"><span>Puntos canjeados</span><b id="summary-total">0</b></div>
-      <p class="wish">Esperamos que pases unas fiestas llenas de amor, cariño y buenos momentos junto a los tuyos. ❤️</p>
+
+      <div class="letter-body" id="letter-body">
+        <p class="wish">Que estas fiestas te traigan salud, alegría y mucho cariño. Gracias por todo lo que haces durante el año: este regalo es nuestra forma de decirte lo importante que eres para nosotros.</p>
+        <p class="wish">Feliz Navidad y felices fiestas. ❤️</p>
+        <p class="closing">Con mucho cariño,</p>
+        <div class="signature" aria-label="ASCIL Biopharm">
+          <span class="sig-text">ASCIL Biopharm</span>
+          <span class="pen" aria-hidden="true">✒️</span>
+        </div>
+      </div>
       <div class="actions">
         <button class="btn btn-ghost" id="print">Guardar / imprimir resumen</button>
       </div>
-      <p class="fine">Con mucho cariño, ASCIL Biopharm 🎄</p>
     </div>
   </section>
 

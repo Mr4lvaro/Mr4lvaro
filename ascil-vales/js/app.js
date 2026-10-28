@@ -87,7 +87,7 @@
     // reset
     env.className = "envelope"; counter.textContent = "0"; btn.hidden = true;
     $("screen-redeem").classList.remove("burst"); $("confetti").innerHTML = "";
-    title.textContent = "Abriendo tu sobre…"; sub.textContent = "Tenemos algo especial esperándote";
+    title.textContent = "Abriendo tu sobre…"; sub.textContent = "Tenemos algo especial para ti";
     show("screen-redeem");
 
     await wait(700);
@@ -98,12 +98,12 @@
     $("screen-redeem").classList.add("burst");
     confetti();
     await countUp(counter, TOTAL, 1600);
-    await swap(title, sub, `ASCIL Biopharm te da un vale regalo de ${fmt(TOTAL)} puntos`, "");
-    await wait(2600);
+    await swap(title, sub, `Un vale regalo de ${fmt(TOTAL)} puntos`, `Este año te regalamos ${fmt(TOTAL)} puntos.`);
+    await wait(2800);
     confetti();
-    await swap(title, sub, "Feliz Navidad 🎄",
-      "Desde ASCIL Biopharm te deseamos una feliz Navidad y unas felices fiestas. ¿Y para ello qué mejor forma que con esta cesta de Navidad? " +
-      `Tienes ${fmt(TOTAL)} puntos para que puedas gastarlos y escoger los regalos que tú prefieras.`);
+    await swap(title, sub, "Feliz Navidad desde ASCIL Biopharm 🎄",
+      "Te deseamos una feliz Navidad, unas felices fiestas y lo mejor de todo. ¿Y qué mejor forma que con esta cesta de Navidad? " +
+      `Tienes ${fmt(TOTAL)} puntos para que los gastes y escojas los regalos a tu gusto, lo que tú prefieras.`);
     await wait(900);
     btn.hidden = false; btn.focus();
   }
@@ -151,6 +151,9 @@
   const left = () => TOTAL - spent();
   const count = () => [...cart.values()].reduce((a, b) => a + b, 0);
   const byId = (id) => products.find((p) => p.id === id);
+  // Foto del producto si existe "img"; si no, el emoji
+  const pic = (p) => (p.img ? `<img src="${p.img}" alt="">` : p.emoji);
+  const picCls = (p) => (p.img ? "has-img" : "is-emoji");
 
   function startShop() {
     cart.clear(); renderGrid(); renderBasket();
@@ -163,7 +166,7 @@
       const b = document.createElement("button");
       b.className = "product"; b.dataset.id = p.id; b.style.animationDelay = `${i * 45}ms`;
       b.innerHTML = `${p.tag ? `<span class="tag">${p.tag}</span>` : ""}<span class="qty-badge">0</span>
-        <span class="emoji">${p.emoji}</span><span class="p-name">${p.name}</span><span class="p-pts">${fmt(p.points)} pts</span>`;
+        <span class="thumb ${picCls(p)}">${pic(p)}</span><span class="p-name">${p.name}</span><span class="p-pts">${fmt(p.points)} pts</span>`;
       b.addEventListener("click", () => add(p.id, b));
       grid.appendChild(b);
     });
@@ -176,7 +179,7 @@
       return;
     }
     cart.set(id, (cart.get(id) || 0) + 1);
-    fly(card.querySelector(".emoji"));
+    fly(card.querySelector(".thumb"));
     renderBasket(id);
   }
 
@@ -198,7 +201,7 @@
     const target = mobile ? $("basket-fab") : $("basket-stage");
     const a = srcEl.getBoundingClientRect(), b = target.getBoundingClientRect();
     const el = document.createElement("span");
-    el.className = "fly"; el.textContent = srcEl.textContent;
+    el.className = `fly ${srcEl.classList.contains("has-img") ? "has-img" : ""}`; el.innerHTML = srcEl.innerHTML;
     el.style.left = a.left + "px"; el.style.top = a.top + "px";
     document.body.appendChild(el);
     const dx = b.left + b.width / 2 - a.left - a.width / 2, dy = b.top + b.height * 0.4 - a.top - a.height / 2;
@@ -223,7 +226,7 @@
         const p = byId(id);
         li = document.createElement("li");
         li.className = "b-item"; li.dataset.id = id;
-        li.innerHTML = `<span class="b-emoji">${p.emoji}</span>
+        li.innerHTML = `<span class="b-emoji ${picCls(p)}">${pic(p)}</span>
           <div class="b-info"><div class="b-name">${p.name}</div><div class="b-pts"></div></div>
           <div class="b-qty"><button aria-label="Quitar uno">−</button><span></span><button aria-label="Añadir uno">+</button></div>`;
         const [minus, plus] = li.querySelectorAll("button");
@@ -271,7 +274,8 @@
       if (have.has(key)) { have.delete(key); return; }
       const el = document.createElement("span");
       el.className = "piece"; el.dataset.key = key;
-      el.textContent = byId(key.split("#")[0]).emoji;
+      const pp = byId(key.split("#")[0]);
+      el.classList.add(picCls(pp)); el.innerHTML = pic(pp);
       const slot = SLOTS[i % SLOTS.length];
       el.style.left = `${slot}%`;
       el.style.bottom = `${56 + Math.floor(i / 3) * 18 + (i % 2) * 8}px`;
@@ -301,13 +305,25 @@
     $("basket").classList.remove("show");
     markUsed(currentCode);
 
-    $("summary").innerHTML = [...cart].map(([id, q], i) => {
-      const p = byId(id);
-      return `<li style="animation-delay:${0.5 + i * 0.12}s"><span>${p.emoji}</span><span class="s-name">${p.name}</span><span class="s-qty">×${q} · ${fmt(p.points * q)} pts</span></li>`;
-    }).join("");
+    const base = window.CONFIG.baseBox;
+    const rows = [...cart].map(([id, q]) => ({ p: byId(id), q }));
+    const line = (p, right) => `<span class="s-pic ${picCls(p)}">${pic(p)}</span><span class="s-name">${p.name}</span><span class="s-qty">${right}</span>`;
+    const items = [];
+    if (base) items.push(`<li>${line(base, "Incluida")}</li>`);
+    rows.forEach(({ p, q }) => items.push(`<li>${line(p, `×${q} · ${fmt(p.points * q)} pts`)}</li>`));
+    $("summary").innerHTML = items.join("");
+    [...$("summary").children].forEach((li, i) => { li.style.animationDelay = `${0.9 + i * 0.12}s`; });
     $("summary-total").textContent = `${fmt(spent())} pts`;
     $("done-title").textContent = currentName ? `Felices fiestas y feliz Navidad, ${currentName}` : "Felices fiestas y feliz Navidad";
-    $("done-lead").textContent = `Hemos registrado tu selección por un total de ${fmt(spent())} puntos. Recibirás esto:`;
+
+    // Caja base: los primeros regalos asoman por la caja
+    $("gb-items").innerHTML = rows.slice(0, 3).map(({ p }, i) => `<span class="gb-item ${picCls(p)}" style="--i:${i}">${pic(p)}</span>`).join("");
+    // La carta aparece después de la lista y la firma se "escribe" al final
+    const letterAt = 0.9 + items.length * 0.12 + 0.6;
+    const body = $("letter-body");
+    body.style.setProperty("--at", `${letterAt}s`);
+    body.style.setProperty("--sign", `${letterAt + 1.8}s`);
+    body.classList.remove("go"); void body.offsetWidth; body.classList.add("go");
     show("screen-done");
     confettiOn();
   });

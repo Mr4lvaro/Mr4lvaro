@@ -15,7 +15,11 @@ window.CONFIG = {
     "NAVIDAD": "",
   },
 
-  // Catálogo: emoji = imagen provisional. Sustituir por "img" cuando haya fotos reales.
+  // Lo que siempre lleva cada pedido (la caja base). Quita "baseBox" o ponlo a null para no mostrarla.
+  baseBox: { name: "Caja de Navidad ASCIL Biopharm", emoji: "📦", img: "" },
+
+  // Catálogo. Para poner foto real: añade  img: "assets/products/jamon.jpg"  (si no hay img se usa el emoji).
+  // "points" = puntos que cuesta cada producto.
   products: [
     { id: "jamon",    name: "Jamón ibérico de bellota", emoji: "🍖", points: 450, tag: "Premium" },
     { id: "aceite",   name: "Aceite de oliva virgen extra", emoji: "🫒", points: 120 },
