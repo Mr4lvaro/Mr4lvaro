@@ -1,10 +1,10 @@
 :root {
-  --purple: #5a58a6;
-  --purple-dark: #3d3b82;
+  --purple: #3b4fb4;
+  --purple-dark: #1e2d78;
   --blue: #1db3f0;
   --blue-deep: #2a71c2;
   --ice: #eaf6fd;
-  --night: #121a45;
+  --night: #0a1550;
   --gold: #f2b84b;
   --gold-light: #ffe29a;
   --red: #d8434e;
@@ -39,7 +39,7 @@ body {
 #screen-code, #screen-done { align-items: center; justify-content: center; padding: 20px; }
 #screen-code { background:
   radial-gradient(circle at 15% 10%, rgba(29,179,240,.18), transparent 40%),
-  radial-gradient(circle at 90% 90%, rgba(90,88,166,.2), transparent 45%); }
+  radial-gradient(circle at 90% 90%, rgba(59,79,180,.22), transparent 45%); }
 
 .logo { width: 230px; max-width: 70%; margin: 0 auto 6px; display: block; }
 .eyebrow { color: var(--red); font-weight: 700; letter-spacing: .06em; font-size: .85rem; text-transform: uppercase; margin: 12px 0 4px; }
@@ -72,7 +72,7 @@ h1 { margin: 0 0 10px; font-size: 2rem; color: var(--purple); letter-spacing: -.
 
 /* ---------- Pantalla 2 · animación ---------- */
 #screen-redeem {
-  background: radial-gradient(ellipse at center, #2b3a8f 0%, var(--night) 70%);
+  background: radial-gradient(ellipse at center, #2a45b8 0%, var(--night) 70%);
   align-items: center; justify-content: center; position: relative; overflow: hidden; color: #fff;
 }
 .glow { position: absolute; width: 700px; height: 700px; border-radius: 50%;
@@ -83,12 +83,12 @@ h1 { margin: 0 0 10px; font-size: 2rem; color: var(--purple); letter-spacing: -.
 .stage { position: relative; z-index: 2; text-align: center; padding: 20px; }
 .envelope { position: relative; width: 300px; height: 200px; margin: 0 auto 44px; perspective: 900px; }
 .envelope > * { position: absolute; }
-.env-back  { inset: 0; background: #3f3c8a; border-radius: 10px; box-shadow: 0 24px 50px rgba(0,0,0,.45); }
+.env-back  { inset: 0; background: #24338f; border-radius: 10px; box-shadow: 0 24px 50px rgba(0,0,0,.45); }
 .env-front { inset: 0; z-index: 4; border-radius: 10px;
-  background: linear-gradient(160deg, #6a67bd, var(--purple));
+  background: linear-gradient(160deg, #5b73e0, var(--purple));
   clip-path: polygon(0 0, 50% 58%, 100% 0, 100% 100%, 0 100%); }
 .env-flap { left: 0; right: 0; top: 0; height: 116px; z-index: 5; transform-origin: top center;
-  background: linear-gradient(#7673c9, #5a58a6); clip-path: polygon(0 0, 100% 0, 50% 100%); }
+  background: linear-gradient(#6f86ec, #3b4fb4); clip-path: polygon(0 0, 100% 0, 50% 100%); }
 .env-seal { left: 50%; top: 82px; z-index: 6; width: 52px; height: 52px; margin-left: -26px; border-radius: 50%;
   display: grid; place-items: center; font-size: 1.6rem; background: var(--red); box-shadow: 0 4px 12px rgba(0,0,0,.35); }
 .voucher { left: 22px; right: 22px; top: 14px; height: 170px; z-index: 3; border-radius: 10px; color: var(--ink);
@@ -353,6 +353,64 @@ h1 { margin: 0 0 10px; font-size: 2rem; color: var(--purple); letter-spacing: -.
 .hand .ch { opacity: 0; transition: opacity .12s; }
 .hand .ch.on { opacity: 1; }
 .hand.sign { font-weight: 700; font-size: 2.6rem; line-height: 1.1; margin: 4px 0 0; color: var(--purple-dark); text-align: right; }
-.letter-body.done .hand:last-child::after { content: " ❤️"; font-size: 1.5rem; animation: heartPop .6s cubic-bezier(.3,1.6,.5,1) both; display: inline-block; }
 @keyframes heartPop { from { opacity: 0; transform: scale(0); } to { opacity: 1; transform: none; } }
 @media (max-width: 480px) { .letter { padding-left: 22px; padding-right: 22px; } .hand { font-size: 1.4rem; } .hand.sign { font-size: 2.2rem; } }
+
+/* ================= Ronda 4: azul ASCIL, canje y catálogo real ================= */
+/* Canje: fondo azul real, lazo dorado, abeto y nieve */
+#screen-redeem { background: radial-gradient(ellipse at 50% 35%, #2f50d0 0%, #14288f 45%, #081253 100%); }
+.glow { background: radial-gradient(circle, rgba(255,214,120,.45), transparent 65%); }
+.env-back { background: #1f2f9a; }
+.env-seal { background: none; box-shadow: none; width: 70px; height: 40px; margin-left: -35px; top: 74px; }
+.env-seal i { position: absolute; left: 50%; top: 50%; width: 18px; height: 18px; margin: -9px 0 0 -9px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #ffe9a8, #e0a42b); box-shadow: 0 2px 5px rgba(0,0,0,.4); z-index: 2; }
+.env-seal::before, .env-seal::after { content: ""; position: absolute; top: 4px; width: 32px; height: 24px; border: 7px solid #f2b84b; border-radius: 50%; box-shadow: 0 2px 5px rgba(0,0,0,.35); }
+.env-seal::before { left: 0; transform: rotate(-24deg); border-right-color: #e0a42b; }
+.env-seal::after { right: 0; transform: rotate(24deg); border-left-color: #e0a42b; }
+.v-points { color: #1e2d78; }
+.v-points::before, .v-points::after { content: "★"; color: #f2b84b; font-size: 1.1rem; margin: 0 8px; vertical-align: middle; }
+.redeem-title .gold, .redeem-sub .gold { color: #ffd45c; font-weight: 800; }
+.redeem-sub { color: #dbe4ff; }
+.snowmound { position: absolute; z-index: 1; left: -10%; right: -10%; bottom: -70px; height: 150px; border-radius: 50%;
+  background: radial-gradient(ellipse at 50% 30%, #ffffff 0, #e4ecff 55%, rgba(228,236,255,0) 72%); filter: blur(1.5px); }
+.deco { position: absolute; z-index: 1; bottom: 24px; width: 160px; height: 200px; pointer-events: none; }
+.deco-l { left: 2%; } .deco-r { right: 2%; transform: scaleX(-1); }
+.deco .tree { position: absolute; left: 0; bottom: 0; font-size: 7rem; line-height: 1; filter: drop-shadow(0 6px 10px rgba(0,0,0,.35)); }
+.bauble { position: absolute; width: 26px; height: 26px; border-radius: 50%; box-shadow: inset -4px -4px 8px rgba(0,0,0,.3), 0 3px 6px rgba(0,0,0,.35); animation: bobBauble 3s infinite ease-in-out; }
+.bauble::before { content: ""; position: absolute; top: 4px; left: 6px; width: 7px; height: 5px; border-radius: 50%; background: rgba(255,255,255,.7); }
+.bauble.b1 { left: 96px; bottom: 28px; background: radial-gradient(circle at 35% 30%, #ffe9a8, #e0a42b); }
+.bauble.b2 { left: 126px; bottom: 6px; width: 20px; height: 20px; background: radial-gradient(circle at 35% 30%, #7d93ff, #2038b8); animation-delay: .8s; }
+.bauble.b3 { left: 100px; bottom: 10px; background: radial-gradient(circle at 35% 30%, #7d93ff, #2038b8); animation-delay: .4s; }
+.bauble.b4 { left: 128px; bottom: 40px; width: 20px; height: 20px; background: radial-gradient(circle at 35% 30%, #ffe9a8, #e0a42b); animation-delay: 1.2s; }
+@keyframes bobBauble { 50% { transform: translateY(-4px); } }
+@media (max-width: 700px) { .deco { display: none; } }
+
+/* Azul también en el resto de pantallas */
+#screen-code { background: radial-gradient(circle at 15% 10%, rgba(29,179,240,.2), transparent 40%), radial-gradient(circle at 90% 90%, rgba(59,79,180,.22), transparent 45%); }
+.code-card h1 { font-size: 1.55rem; }
+
+/* Filtros */
+.filters { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 18px; }
+.chip { font: inherit; font-size: .85rem; font-weight: 600; border: 0; cursor: pointer; padding: 8px 16px; border-radius: 99px; background: #fff; color: var(--purple-dark); box-shadow: 0 2px 8px rgba(42,60,140,.12); transition: transform .15s, background .2s, color .2s; }
+.chip:hover { transform: translateY(-2px); }
+.chip.on { background: linear-gradient(135deg, var(--purple), var(--blue-deep)); color: #fff; }
+.chip.gf-chip { background: #e3f6ec; color: #0d7a43; margin-left: auto; }
+.chip.gf-chip.on { background: #12a35e; color: #fff; }
+
+/* Tarjetas con foto real */
+.grid { grid-template-columns: repeat(auto-fill, minmax(185px, 1fr)); }
+.product { aspect-ratio: auto; justify-content: flex-start; gap: 5px; padding: 12px; }
+.product .thumb { flex: none; height: 128px; margin: 6px 0 4px; }
+.thumb.has-img img { object-fit: contain; border-radius: 8px; }
+.product .p-name { font-size: .88rem; }
+.product .p-detail { font-size: .72rem; color: var(--muted); line-height: 1.25; }
+.product .p-pts { margin-top: auto; }
+.gf { position: absolute; top: 10px; left: 10px; z-index: 2; font-size: .58rem; letter-spacing: .05em; text-transform: uppercase; font-weight: 800; background: #dff5e8; color: #0d7a43; padding: 2px 8px; border-radius: 99px; }
+.piece.has-img img { object-fit: contain; background: #fff; padding: 2px; }
+.b-emoji.has-img img { object-fit: contain; background: #fff; }
+.fly.has-img img { object-fit: contain; background: #fff; padding: 3px; }
+@media (max-width: 900px) { .grid { grid-template-columns: repeat(2, 1fr); } .product .thumb { height: 100px; } .chip.gf-chip { margin-left: 0; } }
+
+/* Fotos siempre dentro de su hueco */
+.product .thumb { position: relative; overflow: hidden; display: block; }
+.thumb.has-img img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
+.redeem-sub { max-width: 640px; }

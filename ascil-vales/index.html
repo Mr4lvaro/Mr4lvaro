@@ -18,7 +18,7 @@
     <div class="floaties" aria-hidden="true"><span>🎄</span><span>⭐</span><span>🎁</span><span>❄️</span><span>🔔</span></div>
     <form class="card code-card" id="code-form" autocomplete="off" novalidate>
       <img class="logo" src="assets/logo.png" alt="ASCIL Biopharm">
-      <h1 class="rise-in" style="--d:.1s">ASCIL Biopharm te desea una feliz Navidad</h1>
+      <h1 class="rise-in" style="--d:.1s">ASCIL Biopharm te desea<br>¡Feliz Navidad y felices fiestas!</h1>
       <p class="eyebrow rise-in" style="--d:.35s">🎁 Canjea tu regalo</p>
       <p class="lead rise-in" style="--d:.55s">Introduce el código que encontrarás dentro de tu sobre para activar tu regalo.</p>
       <label class="field rise-in" style="--d:.75s">
@@ -26,7 +26,7 @@
         <input id="code-input" type="text" inputmode="text" placeholder="ASCIL000" maxlength="20" spellcheck="false" autocapitalize="characters">
       </label>
       <p class="error" id="code-error" role="alert" aria-live="polite"></p>
-      <button class="btn btn-primary rise-in" style="--d:.95s" type="submit">Feliz Navidad 🎄</button>
+      <button class="btn btn-primary rise-in" style="--d:.95s" type="submit">Descubre tu regalo 🎁</button>
     </form>
   </main>
 
@@ -43,12 +43,15 @@
         </div>
         <div class="env-front"></div>
         <div class="env-flap"></div>
-        <div class="env-seal">🎁</div>
+        <div class="env-seal"><i></i></div>
       </div>
       <h2 class="redeem-title" id="redeem-title">Abriendo tu sobre…</h2>
       <p class="redeem-sub" id="redeem-sub">Tenemos algo especial esperándote</p>
       <button class="btn btn-gold" id="redeem-continue" hidden>Elige tus regalos →</button>
     </div>
+    <div class="deco deco-l" aria-hidden="true"><span class="tree">🎄</span><i class="bauble b1"></i><i class="bauble b2"></i></div>
+    <div class="deco deco-r" aria-hidden="true"><span class="tree">🎄</span><i class="bauble b3"></i><i class="bauble b4"></i></div>
+    <div class="snowmound" aria-hidden="true"></div>
     <div class="confetti" id="confetti"></div>
   </section>
 
@@ -65,6 +68,7 @@
     <div class="shop-body">
       <div class="catalog">
         <h2>Elige tus regalos <small>Pulsa en un producto y mira cómo se llena tu cesta</small></h2>
+        <div class="filters" id="filters"></div>
         <div class="grid" id="grid"></div>
       </div>
 
@@ -103,7 +107,7 @@
     <div class="card letter done-card">
       <div class="wax" aria-hidden="true">A</div>
       <p class="eyebrow">✔ Selección confirmada</p>
-      <h1 id="done-title">Felices fiestas y feliz Navidad</h1>
+      <h1 id="done-title">¡Feliz Navidad y felices fiestas!</h1>
       <h2 class="greeting" id="done-greeting"></h2>
 
       <div class="letter-body" id="letter-body"></div>

@@ -101,9 +101,9 @@
     await swap(title, sub, `Un vale regalo de ${fmt(TOTAL)} puntos`, `Este año te regalamos ${fmt(TOTAL)} puntos.`);
     await wait(2800);
     confetti();
-    await swap(title, sub, "Feliz Navidad desde ASCIL Biopharm 🎄",
-      "Te deseamos una feliz Navidad, unas felices fiestas y lo mejor de todo. ¿Y qué mejor forma que con esta cesta de Navidad? " +
-      `Tienes ${fmt(TOTAL)} puntos para que los gastes y escojas los regalos a tu gusto, lo que tú prefieras.`);
+    await swap(title, sub, "¡Feliz Navidad y felices fiestas!",
+      "En ASCIL Biopharm queremos compartir contigo la magia de estas fechas.<br>" +
+      `Disfruta de tus <b class="gold">${fmt(TOTAL)} puntos</b> y elige el regalo que más te ilusione.`);
     await wait(900);
     btn.hidden = false; btn.focus();
   }
@@ -112,7 +112,7 @@
   async function swap(titleEl, subEl, t, st) {
     [titleEl, subEl].forEach((e) => e.classList.add("fade-out"));
     await wait(350);
-    titleEl.textContent = t; subEl.textContent = st;
+    titleEl.textContent = t; subEl.innerHTML = st;
     [titleEl, subEl].forEach((e) => { e.classList.remove("fade-out"); e.classList.add("fade-in"); });
     await wait(500);
     [titleEl, subEl].forEach((e) => e.classList.remove("fade-in"));
@@ -155,21 +155,38 @@
   const pic = (p) => (p.img ? `<img src="${p.img}" alt="">` : p.emoji);
   const picCls = (p) => (p.img ? "has-img" : "is-emoji");
 
+  let activeCat = "all", onlyGF = false;
+
   function startShop() {
-    cart.clear(); renderGrid(); renderBasket();
+    cart.clear(); activeCat = "all"; onlyGF = false;
+    renderFilters(); renderGrid(); renderBasket();
     show("screen-shop");
+  }
+
+  function renderFilters() {
+    const box = $("filters"); box.innerHTML = "";
+    const chip = (label, active, cls, onClick) => {
+      const b = document.createElement("button");
+      b.type = "button"; b.className = `chip ${cls} ${active ? "on" : ""}`; b.textContent = label;
+      b.addEventListener("click", onClick); box.appendChild(b);
+    };
+    chip("Todo", activeCat === "all", "", () => { activeCat = "all"; renderFilters(); renderGrid(); });
+    window.CONFIG.categories.forEach((c) => chip(c.name, activeCat === c.id, "", () => { activeCat = c.id; renderFilters(); renderGrid(); }));
+    chip("Sin gluten", onlyGF, "gf-chip", () => { onlyGF = !onlyGF; renderFilters(); renderGrid(); });
   }
 
   function renderGrid() {
     const grid = $("grid"); grid.innerHTML = "";
-    products.forEach((p, i) => {
+    products.filter((p) => (activeCat === "all" || p.cat === activeCat) && (!onlyGF || p.gf)).forEach((p, i) => {
       const b = document.createElement("button");
-      b.className = "product"; b.dataset.id = p.id; b.style.animationDelay = `${i * 45}ms`;
-      b.innerHTML = `${p.tag ? `<span class="tag">${p.tag}</span>` : ""}<span class="qty-badge">0</span>
-        <span class="thumb ${picCls(p)}">${pic(p)}</span><span class="p-name">${p.name}</span><span class="p-pts">${fmt(p.points)} pts</span>`;
+      b.className = "product"; b.dataset.id = p.id; b.style.animationDelay = `${Math.min(i, 12) * 40}ms`;
+      b.innerHTML = `${p.gf ? '<span class="gf">Sin gluten</span>' : ""}<span class="qty-badge">0</span>
+        <span class="thumb ${picCls(p)}">${pic(p)}</span><span class="p-name">${p.name}</span>
+        <span class="p-detail">${p.detail || ""}</span><span class="p-pts">${fmt(p.points)} pts</span>`;
       b.addEventListener("click", () => add(p.id, b));
       grid.appendChild(b);
     });
+    renderBasket();
   }
 
   function add(id, card) {
@@ -306,7 +323,6 @@
     markUsed(currentCode);
 
     const greet = $("done-greeting");
-    $("done-title").textContent = currentName ? "Felices fiestas y feliz Navidad," : "Felices fiestas y feliz Navidad";
     greet.textContent = currentName; greet.hidden = !currentName;
     startLetter(1500);
     show("screen-done");
@@ -332,9 +348,9 @@
       for (const ch of p.children) {
         if (run !== letterRun) return;
         ch.classList.add("on");
-        if (!reduceMotion) await wait(/[.,]/.test(ch.textContent) ? 220 : 34 + Math.random() * 40);
+        if (!reduceMotion) await wait(/[.,]/.test(ch.textContent) ? 150 : 16 + Math.random() * 22);
       }
-      if (!reduceMotion) await wait(p.classList.contains("sign") ? 0 : 450);
+      if (!reduceMotion) await wait(p.classList.contains("sign") ? 0 : 350);
     }
     if (run === letterRun) box.classList.add("done");
   }
