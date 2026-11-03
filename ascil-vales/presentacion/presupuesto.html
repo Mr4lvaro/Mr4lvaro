@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><title>Presupuesto · Vale de Navidad 2026</title>
+<style>
+@page { size: A4; margin: 0; }
+:root { --blue:#3b4fb4; --dark:#1e2d78; --sky:#1db3f0; --ink:#1f2250; --muted:#6b7099; --line:#e3e6f5; --gold:#f2b84b; }
+* { box-sizing:border-box; }
+body { margin:0; font-family:"Segoe UI",system-ui,"Helvetica Neue",Arial,sans-serif; color:var(--ink); -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+.page { width:210mm; height:297mm; padding:16mm 16mm 14mm; position:relative; background:#fff; overflow:hidden; }
+.band { position:absolute; top:0; left:0; right:0; height:8mm; background:linear-gradient(90deg,var(--dark),var(--blue) 55%,var(--sky)); }
+.top { display:flex; justify-content:space-between; align-items:flex-start; margin-top:6mm; }
+.top img { height:20mm; }
+.title { text-align:right; }
+.title h1 { margin:0; font-size:30px; color:var(--dark); letter-spacing:-.01em; }
+.title p { margin:4px 0 0; color:var(--muted); font-size:13px; }
+.meta { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:10mm; }
+.meta div { background:#f4f6ff; border-radius:10px; padding:10px 14px; }
+.meta small { display:block; color:var(--muted); font-size:10.5px; text-transform:uppercase; letter-spacing:.07em; font-weight:700; }
+.meta b { font-size:15px; color:var(--dark); }
+h2 { font-size:13px; text-transform:uppercase; letter-spacing:.08em; color:var(--blue); margin:10mm 0 3mm; }
+table { width:100%; border-collapse:collapse; }
+th { text-align:left; font-size:10.5px; text-transform:uppercase; letter-spacing:.07em; color:var(--muted); padding:8px 10px; border-bottom:2px solid var(--line); }
+td { padding:12px 10px; border-bottom:1px solid var(--line); vertical-align:top; font-size:13.5px; }
+.r { text-align:right; white-space:nowrap; }
+td .d { display:block; color:var(--muted); font-size:11.5px; margin-top:4px; line-height:1.45; font-weight:400; }
+td b { color:var(--dark); }
+.total { margin-top:6mm; display:flex; justify-content:flex-end; }
+.tbox { width:88mm; background:linear-gradient(135deg,var(--dark),var(--blue)); color:#fff; border-radius:14px; padding:16px 20px; }
+.tbox .row { display:flex; justify-content:space-between; font-size:13px; opacity:.9; margin-bottom:6px; }
+.tbox .big { display:flex; justify-content:space-between; align-items:baseline; border-top:1px solid rgba(255,255,255,.3); padding-top:10px; margin-top:6px; }
+.tbox .big span { font-size:13px; }
+.tbox .big b { font-size:28px; }
+.tbox small { display:block; text-align:right; opacity:.8; font-size:10.5px; margin-top:2px; }
+.scale td, .scale th { padding:9px 10px; }
+.scale tr.cur td { background:#eef2ff; font-weight:700; color:var(--dark); }
+.note { margin-top:5mm; background:#fff8e6; border:1px solid #f2d99a; border-radius:10px; padding:10px 14px; font-size:12px; color:#6a4b00; line-height:1.5; }
+.foot { position:absolute; left:16mm; right:16mm; bottom:10mm; display:flex; justify-content:space-between; color:#9aa0c4; font-size:10.5px; border-top:1px solid var(--line); padding-top:6px; }
+</style></head>
+<body>
+<section class="page">
+  <div class="band"></div>
+  <div class="top">
+    <img src="../assets/logo.png" alt="ASCIL Biopharm">
+    <div class="title"><h1>Presupuesto</h1><p>Vale de Navidad 2026</p></div>
+  </div>
+
+  <div class="meta">
+    <div><small>Cliente</small><b>ASCIL Biopharm</b></div>
+    <div><small>Fecha</small><b>3 de noviembre de 2026</b></div>
+    <div><small>Personas</small><b>25</b></div>
+  </div>
+
+  <h2>Detalle</h2>
+  <table>
+    <thead><tr><th>Concepto</th><th class="r">Cantidad</th><th class="r">Precio unidad</th><th class="r">Importe</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><b>Vale de Navidad: cesta a elegir</b>
+          <span class="d">1.000 puntos por persona para elegir entre los 31 productos del catálogo, con web de canje personalizada y un código individual para cada empleado.</span></td>
+        <td class="r">25 personas</td><td class="r">84,00 €</td><td class="r"><b>2.100,00 €</b></td>
+      </tr>
+      <tr>
+        <td><b>Transporte</b></td>
+        <td class="r">1</td><td class="r">4,99 €</td><td class="r"><b>4,99 €</b></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="total">
+    <div class="tbox">
+      <div class="row"><span>Cesta de Navidad (25 personas)</span><span>2.100,00 €</span></div>
+      <div class="row"><span>Transporte</span><span>4,99 €</span></div>
+      <div class="big"><span>TOTAL</span><b>2.104,99 €</b></div>
+      <small>IVA incluido</small>
+    </div>
+  </div>
+
+  <h2>Si sois más personas</h2>
+  <table class="scale">
+    <thead><tr><th>Personas</th><th class="r">Cesta (84,00 € / persona)</th><th class="r">Transporte</th><th class="r">Total (IVA incl.)</th></tr></thead>
+    <tbody>
+      <tr class="cur"><td>25</td><td class="r">2.100,00 €</td><td class="r">4,99 €</td><td class="r">2.104,99 €</td></tr>
+      <tr><td>30</td><td class="r">2.520,00 €</td><td class="r">4,99 €</td><td class="r">2.524,99 €</td></tr>
+      <tr><td>40</td><td class="r">3.360,00 €</td><td class="r">4,99 €</td><td class="r">3.364,99 €</td></tr>
+      <tr><td>50</td><td class="r">4.200,00 €</td><td class="r">4,99 €</td><td class="r">4.204,99 €</td></tr>
+    </tbody>
+  </table>
+  <div class="note">Para cualquier otro número de personas: <b>84,00 € × número de personas + 4,99 € de transporte</b>. Todos los importes incluyen IVA.</div>
+
+  <div class="foot"><span>ASCIL Biopharm · Vale de Navidad 2026</span><span>Presupuesto</span></div>
+</section>
+</body></html>
