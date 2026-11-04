@@ -1,6 +1,6 @@
 // Acceso a Supabase por su API REST (PostgREST). Solo se usa desde el servidor.
-const base = () => `${process.env.SUPABASE_URL.replace(/\/$/, "")}/rest/v1`;
-const key = () => process.env.SUPABASE_SERVICE_ROLE_KEY;
+const base = () => `${process.env.SUPABASE_URL.trim().replace(/\/$/, "")}/rest/v1`;
+const key = () => process.env.SUPABASE_SERVICE_ROLE_KEY.trim();
 
 async function rest(path, { method = "GET", body, headers = {} } = {}) {
   const res = await fetch(base() + path, {

@@ -47,7 +47,7 @@ function registerFailure(req) {
 }
 
 function getDb() {
-  if (process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY) return require("./_db-supabase.js");
+  if (process.env.SUPABASE_URL?.trim() && process.env.SUPABASE_SERVICE_ROLE_KEY?.trim()) return require("./_db-supabase.js");
   if (process.env.USE_MEMORY_DB === "1") return require("./_db-memory.js");
   throw new Error("Base de datos no configurada (faltan SUPABASE_URL y SUPABASE_SERVICE_ROLE_KEY)");
 }
