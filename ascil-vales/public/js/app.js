@@ -37,8 +37,9 @@
 
   /* ---------- Nieve ---------- */
   (function snow() {
-    if (reduceMotion) return;
-    const c = $("snow"), ctx = c.getContext("2d");
+    const c = $("snow");
+    if (reduceMotion || window.CONFIG.snow === false) { c.style.display = "none"; return; }
+    const ctx = c.getContext("2d");
     let flakes = [];
     const resize = () => {
       c.width = innerWidth; c.height = innerHeight;

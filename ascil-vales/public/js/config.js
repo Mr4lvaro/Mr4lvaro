@@ -3,6 +3,9 @@ const CONFIG = {
   company: "ASCIL Biopharm",
   pointsPerEmployee: 1000,
 
+  // Nieve cayendo de fondo. false = fondo estático (sin animación).
+  snow: false,
+
   // Máximo de personas con vale (también lo limita la base de datos).
   maxPeople: 26,
 

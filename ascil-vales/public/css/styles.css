@@ -585,3 +585,22 @@ body.drawer-open { overflow: hidden; }
   .redeem-sub { font-size: .9rem; margin-bottom: 12px; }
   .stage { padding-top: 24px; padding-bottom: 8px; }
 }
+
+/* ================= Modo estático: botones y adornos sin animación ni parpadeos ================= */
+/* Adornos: luces, destellos, bolas y lazo quietos; nada flotando */
+.lights i, .stage-sparkle, .gb-spark, .bauble, .bow { animation: none !important; }
+.floaties { display: none; }
+
+/* Botones y elementos: aparecen ya colocados y no se mueven ni brillan */
+.rise-in, .screen.active, .done-card, .wax, .b-item, .more, #redeem-continue,
+.product.in-cart .qty-badge, .fab-count.bump, .basket.pulse, .basket-stage.wobble,
+.field.shake, .product.nope, .product { animation: none !important; }
+.product { opacity: 1; }
+.btn-gold::after, .code-card .btn-primary::after { display: none; }
+
+/* Sin efectos al pasar el ratón ni al pulsar */
+.btn, .chip, .product, .preset-btns button, .b-qty button, .close-basket, .preview-bar button { transition: none !important; }
+.btn:active, .product:active, .chip:active { transform: none; }
+.product:hover, .chip:hover, .btn-primary:hover, .preset-btns button:hover { transform: none; }
+.points-text strong, .points-text strong.bump { transform: none; transition: none; }
+.bar-fill { transition: none; }
