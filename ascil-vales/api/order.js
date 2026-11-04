@@ -1,6 +1,6 @@
 // POST /api/order  { code, items: [{ id, qty }] }  →  guarda el pedido (una sola vez por persona)
 // Todo se valida en el servidor: código, producto, cantidades y puntos.
-const { CONFIG, norm, send, readBody, tooManyAttempts, registerFailure, getDb } = require("./_lib.js");
+const { CONFIG, norm, isTestCode, send, readBody, tooManyAttempts, registerFailure, getDb } = require("./_lib.js");
 
 module.exports = async (req, res) => {
   if (req.method !== "POST") return send(res, 405, { error: "method" });
@@ -8,6 +8,7 @@ module.exports = async (req, res) => {
     if (tooManyAttempts(req)) return send(res, 429, { error: "too_many" });
     const { code, items } = await readBody(req);
     const c = norm(code);
+    if (isTestCode(c)) return send(res, 200, { ok: true, test: true }); // la prueba nunca guarda nada
     if (!c || !Array.isArray(items) || items.length === 0 || items.length > 60) return send(res, 400, { error: "bad_request" });
 
     // Unir líneas repetidas y validar cada producto

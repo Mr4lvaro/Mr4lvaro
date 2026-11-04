@@ -10,7 +10,7 @@
 
   const cart = new Map(); // id -> cantidad
   let currentCode = null, currentName = "";
-  let mode = DEMO ? "demo" : "real"; // real | preview (administrador) | demo (?demo)
+  let mode = DEMO ? "demo" : "real"; // real | preview (administrador) | test (código PRUEBA) | demo (?demo)
   let adminCode = null;
 
   // Llamada a la API (nunca lanza error: devuelve { ok, status, data })
@@ -26,7 +26,9 @@
   }
 
   /* ---------- Navegación ---------- */
+  let current = "screen-code";
   function show(id) {
+    current = id;
     document.querySelectorAll(".screen").forEach((s) => s.classList.remove("active"));
     $(id).classList.add("active");
     document.body.classList.toggle("in-admin", id === "screen-admin");
@@ -95,6 +97,7 @@
         return runRedeem();
       }
       const r = await api("api/login", { body: { code } });
+      if (r.ok && r.data.test) { startTest(r.data.name, input.value); return; }
       if (r.ok && r.data.admin) { adminCode = input.value; keepAdmin(adminCode); return openAdmin(); }
       if (r.ok) { currentCode = code; currentName = r.data.name || ""; mode = "real"; return runRedeem(); }
       if (r.status === 409) return fail("Este código ya se ha canjeado: tu selección está confirmada. ¡Gracias!");
@@ -509,10 +512,17 @@
     a.download = "pedidos-vale-navidad.csv"; a.click(); URL.revokeObjectURL(a.href);
   });
 
+  // Barra del modo prueba: según quién la use muestra unos botones u otros
+  function showBar({ admin }) {
+    $("preview-bar").hidden = false;
+    $("exit-preview").hidden = !admin;
+    $("test-status").hidden = admin; $("test-restart").hidden = admin;
+  }
+
   // Ver la web como un empleado (modo prueba: no se guarda nada)
   $("preview-btn").addEventListener("click", () => {
     mode = "preview"; currentCode = null; currentName = $("preview-as").value;
-    $("preview-bar").hidden = false;
+    showBar({ admin: true });
     runRedeem();
   });
   $("exit-preview").addEventListener("click", () => {
@@ -526,4 +536,51 @@
     const saved = sessionStorage.getItem("ascil_admin");
     if (saved && !DEMO) { adminCode = saved; openAdmin(); }
   } catch { /* sin almacenamiento */ }
+
+  /* ---------- Código PRUEBA: probar la web sin límites y ver el seguimiento ---------- */
+  let testCode = null, statusData = null, statusFilter = "all", returnTo = "screen-code";
+
+  function startTest(name, code) {
+    mode = "test"; testCode = code; currentCode = null; currentName = name || "";
+    showBar({ admin: false });
+    runRedeem();
+  }
+
+  $("test-restart").addEventListener("click", () => {
+    letterRun++; mode = "real"; testCode = null; cart.clear();
+    $("preview-bar").hidden = true; $("modal").hidden = true; $("basket").classList.remove("show");
+    $("code-input").value = ""; $("code-error").textContent = "";
+    show("screen-code");
+  });
+
+  $("test-status").addEventListener("click", async () => {
+    returnTo = current;
+    show("screen-status");
+    await loadStatus();
+  });
+  $("status-back").addEventListener("click", () => show(returnTo));
+
+  async function loadStatus() {
+    $("status-error").textContent = "";
+    const r = await fetch("api/status", { headers: { "x-test-code": testCode || "" } }).then(async (x) => ({ ok: x.ok, data: await x.json().catch(() => ({})) })).catch(() => ({ ok: false, data: {} }));
+    if (!r.ok) { $("status-error").textContent = "No se ha podido cargar el seguimiento. Inténtalo de nuevo."; return; }
+    statusData = r.data.people; renderStatus();
+  }
+
+  function renderStatus() {
+    const sent = statusData.filter((p) => p.sent), pending = statusData.filter((p) => !p.sent);
+    $("status-stats").innerHTML = [["Personas", statusData.length], ["Han enviado", sent.length], ["Pendientes", pending.length]]
+      .map(([k, v]) => `<div class="stat"><small>${k}</small><b>${v}</b></div>`).join("");
+    const box = $("status-filters"); box.innerHTML = "";
+    [["all", `Todos (${statusData.length})`], ["sent", `Han enviado (${sent.length})`], ["pending", `Pendientes (${pending.length})`]].forEach(([id, label]) => {
+      const b = document.createElement("button");
+      b.type = "button"; b.className = `chip ${statusFilter === id ? "on" : ""}`; b.textContent = label;
+      b.addEventListener("click", () => { statusFilter = id; renderStatus(); });
+      box.appendChild(b);
+    });
+    const shown = statusData.filter((p) => statusFilter === "all" || (statusFilter === "sent") === p.sent);
+    $("status-table").tBodies[0].innerHTML = shown.map((p) => `<tr class="${p.sent ? "" : "pending"}"><td><b>${esc(p.name)}</b></td>
+      <td>${p.sent ? '<span class="badge ok">✔ Ha enviado</span>' : '<span class="badge wait">Pendiente</span>'}</td></tr>`).join("")
+      || '<tr><td colspan="2" class="empty">Nada que mostrar.</td></tr>';
+  }
 })();

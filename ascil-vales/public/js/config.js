@@ -6,6 +6,11 @@ const CONFIG = {
   // Máximo de personas con vale (también lo limita la base de datos).
   maxPeople: 26,
 
+  // Código de PRUEBA para que cualquiera pruebe la web: sin caducidad, usos ilimitados, entra con este
+  // nombre, NO guarda ningún pedido y NO da acceso al panel de administración.
+  testCode: "PRUEBA",
+  testName: "Ruth",
+
   // Solo para probar sin servidor: abre la web con ?demo en la dirección (nada se guarda).
   // Los códigos y nombres reales NO están aquí: viven en la base de datos (Supabase).
   demoCodes: { "DEMO-01": "Ana", "DEMO-02": "Luis", "DEMO-03": "" },

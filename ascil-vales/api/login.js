@@ -1,5 +1,5 @@
 // POST /api/login  { code }  →  { ok, name } | { ok, admin } | error
-const { norm, send, readBody, isAdminCode, tooManyAttempts, registerFailure, getDb } = require("./_lib.js");
+const { CONFIG, norm, isTestCode, send, readBody, isAdminCode, tooManyAttempts, registerFailure, getDb } = require("./_lib.js");
 
 module.exports = async (req, res) => {
   if (req.method !== "POST") return send(res, 405, { error: "method" });
@@ -9,6 +9,7 @@ module.exports = async (req, res) => {
     const c = norm(code);
     if (!c) return send(res, 400, { error: "empty" });
 
+    if (isTestCode(c)) return send(res, 200, { ok: true, test: true, name: CONFIG.testName });
     if (isAdminCode(c)) return send(res, 200, { ok: true, admin: true });
 
     const db = getDb();

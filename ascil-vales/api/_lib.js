@@ -3,6 +3,7 @@ const crypto = require("crypto");
 const CONFIG = require("../public/js/config.js");
 
 const norm = (s) => String(s || "").toUpperCase().replace(/[^A-Z0-9]/g, "");
+const isTestCode = (code) => norm(code) !== "" && norm(code) === norm(CONFIG.testCode);
 
 function send(res, status, body) {
   res.statusCode = status;
@@ -52,4 +53,4 @@ function getDb() {
   throw new Error("Base de datos no configurada (faltan SUPABASE_URL y SUPABASE_SERVICE_ROLE_KEY)");
 }
 
-module.exports = { CONFIG, norm, send, readBody, isAdminCode, tooManyAttempts, registerFailure, getDb };
+module.exports = { CONFIG, norm, isTestCode, send, readBody, isAdminCode, tooManyAttempts, registerFailure, getDb };

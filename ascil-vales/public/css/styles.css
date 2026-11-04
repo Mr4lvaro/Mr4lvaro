@@ -473,3 +473,11 @@ body.in-admin #snow { display: none; }
 .preset-btns button:hover { transform: translateY(-2px); }
 .preset-btns button:disabled { opacity: .5; cursor: wait; }
 .preset-btns button:last-child { background: #e3f6ec; color: #0d7a43; box-shadow: none; }
+
+/* Código PRUEBA: seguimiento */
+#screen-status { background: linear-gradient(170deg, #eaf0ff, #fff 40%); }
+#screen-status.active { display: block; }
+.admin-stats.three { grid-template-columns: repeat(3, 1fr); }
+.status-note { color: var(--muted); font-size: .85rem; margin-top: 12px; }
+#screen-status .filters { margin: 4px 0 12px; }
+.preview-bar { flex-wrap: wrap; max-width: calc(100vw - 24px); }

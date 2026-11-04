@@ -160,10 +160,33 @@
     </div>
   </section>
 
-  <!-- Barra del modo prueba (solo administrador) -->
+  <!-- SEGUIMIENTO (código PRUEBA): solo quién ha enviado y quién no -->
+  <section id="screen-status" class="screen">
+    <div class="admin-wrap">
+      <header class="admin-head">
+        <img src="assets/logo.png" alt="ASCIL Biopharm" class="head-logo">
+        <h1>Seguimiento</h1>
+        <button class="btn btn-primary small" id="status-back">← Volver a la prueba</button>
+      </header>
+      <div class="admin-stats three" id="status-stats"></div>
+      <div class="filters" id="status-filters"></div>
+      <div class="table-wrap">
+        <table class="admin-table" id="status-table">
+          <thead><tr><th>Nombre</th><th>Estado</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <p class="status-note">Aquí solo se ve quién ha enviado su selección, no lo que ha elegido cada persona.</p>
+      <p class="admin-error" id="status-error" role="alert"></p>
+    </div>
+  </section>
+
+  <!-- Barra del modo prueba (administrador y código PRUEBA) -->
   <div class="preview-bar" id="preview-bar" hidden>
     <span>👁 Modo prueba: no se guarda nada</span>
-    <button id="exit-preview">← Volver al panel</button>
+    <button id="exit-preview" hidden>← Volver al panel</button>
+    <button id="test-status" hidden>📋 Seguimiento</button>
+    <button id="test-restart" hidden>↺ Empezar de nuevo</button>
   </div>
 
   <!-- Aviso de confirmación -->
