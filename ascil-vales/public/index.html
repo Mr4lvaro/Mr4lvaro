@@ -114,11 +114,63 @@
     </div>
   </section>
 
+  <!-- PANEL DE ADMINISTRACIÓN -->
+  <section id="screen-admin" class="screen">
+    <div class="admin-wrap">
+      <header class="admin-head">
+        <img src="assets/logo.png" alt="ASCIL Biopharm" class="head-logo">
+        <h1>Panel de administración</h1>
+        <button class="btn btn-ghost small" id="admin-logout">Salir</button>
+      </header>
+
+      <div class="admin-tools">
+        <div class="preview-box">
+          <b>Ver la web como un empleado</b>
+          <div class="preview-row">
+            <select id="preview-as" aria-label="Ver como"></select>
+            <button class="btn btn-primary small" id="preview-btn">👁 Ver como empleado</button>
+          </div>
+          <small>Modo prueba: recorres toda la web igual que ellos, pero no se guarda nada ni se gasta ningún código.</small>
+        </div>
+        <div class="admin-btns">
+          <button class="btn btn-ghost small" id="admin-refresh">↻ Actualizar</button>
+          <button class="btn btn-ghost small" id="admin-csv">⬇ Descargar CSV</button>
+        </div>
+      </div>
+
+      <div class="admin-stats" id="admin-stats"></div>
+
+      <div class="filters" id="admin-filters"></div>
+      <div class="table-wrap">
+        <table class="admin-table" id="admin-table">
+          <thead><tr><th>Nombre</th><th>Código</th><th>Estado</th><th>Pedido</th><th class="r">Puntos</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <h2 class="admin-h2">Total por producto</h2>
+      <div class="table-wrap">
+        <table class="admin-table" id="admin-products">
+          <thead><tr><th>Producto</th><th class="r">Unidades</th><th class="r">Puntos</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <p class="admin-error" id="admin-error" role="alert"></p>
+    </div>
+  </section>
+
+  <!-- Barra del modo prueba (solo administrador) -->
+  <div class="preview-bar" id="preview-bar" hidden>
+    <span>👁 Modo prueba: no se guarda nada</span>
+    <button id="exit-preview">← Volver al panel</button>
+  </div>
+
   <!-- Aviso de confirmación -->
   <div class="modal" id="modal" hidden>
     <div class="modal-box">
       <h3>¿Confirmar tu selección?</h3>
       <p id="modal-text"></p>
+      <p class="modal-error" id="modal-error" role="alert" hidden></p>
       <div class="modal-actions">
         <button class="btn btn-ghost" id="modal-cancel">Seguir eligiendo</button>
         <button class="btn btn-primary" id="modal-ok">Sí, confirmar</button>

@@ -1,21 +1,21 @@
 # ASCIL Biopharm · Vale de Navidad
 
-Web estática de 4 pantallas (sin dependencias, abre `index.html` o súbela a cualquier hosting):
+Web de 4 pantallas con servidor (Vercel + Supabase) y panel de administración. **Puesta en marcha: ver [SETUP.md](SETUP.md).**
 
 1. **Código** – el empleado introduce el código de su sobre ("Descubre tu regalo 🎁").
 2. **Canje** – animación navideña: sobre que se abre, vale que sube, contador de puntos y confeti.
-3. **Tienda** – catálogo de 31 productos con foto y puntos, filtros por categoría y "sin gluten", y una cesta que se va llenando (en móvil, cajón inferior).
-4. **Confirmación** – carta de felicitación escrita a mano, con el nombre de la persona y la firma.
+3. **Tienda** – catálogo de 31 productos con foto y puntos, filtros por categoría y "sin gluten", y cesta que se va llenando.
+4. **Confirmación** – el pedido se guarda en la base de datos y sale la carta escrita a mano, con el nombre.
+5. **Panel de administración** (código de administrador) – pedidos por persona, pendientes, total por producto, CSV y "Ver como empleado".
 
-## Personalizar
-Todo en `js/config.js`:
-- `pointsPerEmployee`: puntos por persona (1.000).
-- `codes`: un código por empleado y su nombre (sale en el mensaje final).
-- `letter` y `signature`: texto de la carta final y firma.
-- `categories` y `products`: catálogo. Cada producto lleva `name`, `detail`, `cat`, `gf` (sin gluten), `points` e `img` (foto en `assets/products/`).
+## Estructura
+- `public/` – la web (HTML, CSS, JS, fotos). Textos y catálogo en `public/js/config.js`.
+- `api/` – funciones del servidor: `login`, `order`, `admin`.
+- `supabase/schema.sql` – tablas de la base de datos.
+- `dev-server.js` – servidor local de pruebas (base de datos en memoria).
+- `presentacion/` – PDF de presentación y presupuesto.
 
-Los textos de las pantallas 1 y 2 están en `index.html` y `js/app.js` (función `runRedeem`).
-
-## Importante
-Los códigos y su "ya canjeado" se validan en el navegador (localStorage): válido para una demo.
-Para el reparto real hace falta un servidor (o formulario/hoja de cálculo) que valide cada código una sola vez y reciba el pedido final.
+## Personalizar (`public/js/config.js`)
+`pointsPerEmployee` (1.000), `maxPeople` (26), `letter` y `signature` (carta final), `categories` y `products`
+(cada producto: `name`, `detail`, `cat`, `gf`, `points`, `img`). Los textos de las pantallas 1 y 2 están en
+`public/index.html` y `public/js/app.js` (`runRedeem`).

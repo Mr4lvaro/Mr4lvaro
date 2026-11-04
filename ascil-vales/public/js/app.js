@@ -1,23 +1,35 @@
 (() => {
-  const { codes, products, pointsPerEmployee: TOTAL } = window.CONFIG;
+  const { products, pointsPerEmployee: TOTAL, demoCodes } = window.CONFIG;
   const norm = (c) => c.toUpperCase().replace(/[^A-Z0-9]/g, "");
-  const codeMap = new Map(Object.entries(codes).map(([c, n]) => [norm(c), n]));
+  const demoMap = new Map(Object.entries(demoCodes || {}).map(([c, n]) => [norm(c), n]));
+  const DEMO = new URLSearchParams(location.search).has("demo"); // prueba sin servidor
   const $ = (id) => document.getElementById(id);
   const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const fmt = (n) => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
   const wait = (ms) => new Promise((r) => setTimeout(r, ms));
 
-  const USED_KEY = "ascil_used_codes";
-  const readUsed = () => { try { return JSON.parse(localStorage.getItem(USED_KEY)) || []; } catch { return []; } };
-  const markUsed = (c) => { try { localStorage.setItem(USED_KEY, JSON.stringify([...readUsed(), c])); } catch {} };
-
   const cart = new Map(); // id -> cantidad
   let currentCode = null, currentName = "";
+  let mode = DEMO ? "demo" : "real"; // real | preview (administrador) | demo (?demo)
+  let adminCode = null;
+
+  // Llamada a la API (nunca lanza error: devuelve { ok, status, data })
+  async function api(path, { method = "POST", body, admin } = {}) {
+    const headers = { "Content-Type": "application/json" };
+    if (admin) headers["x-admin-code"] = admin;
+    let res;
+    try { res = await fetch(path, { method, headers, body: body ? JSON.stringify(body) : undefined }); }
+    catch { return { ok: false, status: 0, data: { error: "network" } }; }
+    let data = {};
+    try { data = await res.json(); } catch { /* sin cuerpo */ }
+    return { ok: res.ok, status: res.status, data };
+  }
 
   /* ---------- Navegación ---------- */
   function show(id) {
     document.querySelectorAll(".screen").forEach((s) => s.classList.remove("active"));
     $(id).classList.add("active");
+    document.body.classList.toggle("in-admin", id === "screen-admin");
     window.scrollTo(0, 0);
   }
 
@@ -65,19 +77,31 @@
   const input = $("code-input");
   input.addEventListener("input", () => { input.value = input.value.toUpperCase(); $("code-error").textContent = ""; });
 
-  $("code-form").addEventListener("submit", (e) => {
+  $("code-form").addEventListener("submit", async (e) => {
     e.preventDefault();
     const code = norm(input.value);
-    const field = input.closest(".field");
+    const field = input.closest(".field"), btn = e.target.querySelector("button[type=submit]");
     const fail = (msg) => {
       $("code-error").textContent = msg;
       field.classList.remove("shake"); void field.offsetWidth; field.classList.add("shake");
     };
     if (!code) return fail("Escribe el código de tu sobre.");
-    if (!codeMap.has(code)) return fail("Código no válido. Revisa que lo hayas escrito igual que en el vale.");
-    if (readUsed().includes(code)) return fail("Este código ya ha sido canjeado.");
-    currentCode = code; currentName = codeMap.get(code) || "";
-    runRedeem();
+
+    btn.disabled = true;
+    try {
+      if (DEMO) {
+        if (!demoMap.has(code)) return fail("Código no válido (modo demo: usa DEMO-01).");
+        currentCode = code; currentName = demoMap.get(code) || "";
+        return runRedeem();
+      }
+      const r = await api("/api/login", { body: { code } });
+      if (r.ok && r.data.admin) { adminCode = input.value; keepAdmin(adminCode); return openAdmin(); }
+      if (r.ok) { currentCode = code; currentName = r.data.name || ""; mode = "real"; return runRedeem(); }
+      if (r.status === 409) return fail("Este código ya se ha canjeado: tu selección está confirmada. ¡Gracias!");
+      if (r.status === 404) return fail("Código no válido. Revisa que lo hayas escrito igual que en el vale.");
+      if (r.status === 429) return fail("Demasiados intentos. Espera unos minutos e inténtalo de nuevo.");
+      return fail("No hemos podido conectar. Inténtalo de nuevo en unos minutos.");
+    } finally { btn.disabled = false; }
   });
 
   /* ---------- Pantalla 2: animación de canje ---------- */
@@ -310,6 +334,7 @@
 
   /* ---------- Confirmación ---------- */
   $("checkout").addEventListener("click", () => {
+    $("modal-error").hidden = true;
     const rest = left();
     $("modal-text").textContent = rest > 0
       ? `Te quedan ${fmt(rest)} puntos sin usar. Una vez confirmes, no podrás cambiar tu selección.`
@@ -317,10 +342,23 @@
     $("modal").hidden = false;
   });
   $("modal-cancel").addEventListener("click", () => { $("modal").hidden = true; });
-  $("modal-ok").addEventListener("click", () => {
+  $("modal-ok").addEventListener("click", async () => {
+    const ok = $("modal-ok"), err = $("modal-error");
+    err.hidden = true;
+    if (mode === "real") {
+      ok.disabled = true; ok.textContent = "Guardando…";
+      const r = await api("/api/order", { body: { code: currentCode, items: [...cart].map(([id, qty]) => ({ id, qty })) } });
+      ok.disabled = false; ok.textContent = "Sí, confirmar";
+      if (!r.ok) {
+        err.textContent = r.status === 409 ? "Este código ya tiene una selección confirmada."
+          : r.status === 400 ? "Tu selección no es válida. Revisa los productos y los puntos."
+          : "No se ha podido guardar tu selección. Comprueba tu conexión e inténtalo de nuevo.";
+        err.hidden = false;
+        return;
+      }
+    }
     $("modal").hidden = true;
     $("basket").classList.remove("show");
-    markUsed(currentCode);
 
     const greet = $("done-greeting");
     greet.textContent = currentName; greet.hidden = !currentName;
@@ -364,4 +402,99 @@
     confetti(box);
     setTimeout(() => box.remove(), 4200);
   }
+
+  /* ---------- Panel de administración ---------- */
+  let adminData = null, adminFilter = "all";
+  const keepAdmin = (c) => { try { sessionStorage.setItem("ascil_admin", c); } catch { /* sin almacenamiento */ } };
+  const forgetAdmin = () => { try { sessionStorage.removeItem("ascil_admin"); } catch { /* sin almacenamiento */ } };
+  const esc = (t) => String(t ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+  const itemsText = (o) => o.items.map((i) => `${i.qty}× ${i.name}`).join(" · ");
+  const when = (iso) => new Date(iso).toLocaleString("es-ES", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" });
+
+  async function openAdmin() {
+    show("screen-admin");
+    await loadAdmin();
+  }
+
+  async function loadAdmin() {
+    $("admin-error").textContent = "";
+    const r = await api("/api/admin", { method: "GET", admin: adminCode });
+    if (!r.ok) {
+      if (r.status === 401) { forgetAdmin(); adminCode = null; show("screen-code"); return; }
+      $("admin-error").textContent = "No se han podido cargar los datos. Pulsa Actualizar para reintentar.";
+      return;
+    }
+    adminData = r.data;
+    renderAdmin();
+  }
+
+  function renderAdmin() {
+    const { people, maxPeople } = adminData;
+    const done = people.filter((p) => p.order), pending = people.filter((p) => !p.order);
+    const pts = done.reduce((s, p) => s + p.order.total_points, 0);
+
+    $("admin-stats").innerHTML = [
+      ["Personas", `${people.length} / ${maxPeople}`], ["Han elegido", done.length], ["Pendientes", pending.length], ["Puntos canjeados", fmt(pts)],
+    ].map(([k, v]) => `<div class="stat"><small>${k}</small><b>${v}</b></div>`).join("");
+
+    const box = $("admin-filters"); box.innerHTML = "";
+    [["all", `Todos (${people.length})`], ["done", `Han elegido (${done.length})`], ["pending", `Pendientes (${pending.length})`]].forEach(([id, label]) => {
+      const b = document.createElement("button");
+      b.type = "button"; b.className = `chip ${adminFilter === id ? "on" : ""}`; b.textContent = label;
+      b.addEventListener("click", () => { adminFilter = id; renderAdmin(); });
+      box.appendChild(b);
+    });
+
+    const shown = people.filter((p) => adminFilter === "all" || (adminFilter === "done") === Boolean(p.order));
+    $("admin-table").tBodies[0].innerHTML = shown.map((p) => `<tr class="${p.order ? "" : "pending"}">
+      <td><b>${esc(p.full_name)}</b>${p.notes ? `<span class="note">📝 ${esc(p.notes)}</span>` : ""}</td>
+      <td><code>${esc(p.code)}</code></td>
+      <td>${p.order ? `<span class="badge ok">✔ Hecho</span><small>${when(p.order.created_at)}</small>` : '<span class="badge wait">Pendiente</span>'}</td>
+      <td class="items">${p.order ? esc(itemsText(p.order)) : "—"}</td>
+      <td class="r">${p.order ? fmt(p.order.total_points) : "—"}</td></tr>`).join("") || '<tr><td colspan="5" class="empty">Nada que mostrar.</td></tr>';
+
+    // Total por producto (para preparar los lotes)
+    const sum = new Map();
+    done.forEach((p) => p.order.items.forEach((i) => {
+      const cur = sum.get(i.id) || { name: i.name, qty: 0, points: 0 };
+      cur.qty += i.qty; cur.points += i.qty * i.points; sum.set(i.id, cur);
+    }));
+    const rows = [...sum.values()].sort((a, b) => b.qty - a.qty || a.name.localeCompare(b.name));
+    $("admin-products").tBodies[0].innerHTML = rows.map((r) => `<tr><td>${esc(r.name)}</td><td class="r">${r.qty}</td><td class="r">${fmt(r.points)}</td></tr>`).join("")
+      || '<tr><td colspan="3" class="empty">Todavía no hay pedidos.</td></tr>';
+
+    $("preview-as").innerHTML = '<option value="">Empleado de prueba (sin nombre)</option>' +
+      people.map((p) => `<option value="${esc(p.first_name)}">${esc(p.full_name)}</option>`).join("");
+  }
+
+  $("admin-refresh").addEventListener("click", loadAdmin);
+  $("admin-logout").addEventListener("click", () => { forgetAdmin(); adminCode = null; adminData = null; $("code-input").value = ""; show("screen-code"); });
+  $("admin-csv").addEventListener("click", () => {
+    if (!adminData) return;
+    const cell = (t) => `"${String(t ?? "").replace(/"/g, '""')}"`;
+    const lines = [["Nombre", "Código", "Estado", "Fecha", "Pedido", "Puntos", "Notas"].map(cell).join(";")];
+    adminData.people.forEach((p) => lines.push([p.full_name, p.code, p.order ? "Hecho" : "Pendiente", p.order ? when(p.order.created_at) : "",
+      p.order ? itemsText(p.order) : "", p.order ? p.order.total_points : "", p.notes || ""].map(cell).join(";")));
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob(["\ufeff" + lines.join("\r\n")], { type: "text/csv;charset=utf-8" }));
+    a.download = "pedidos-vale-navidad.csv"; a.click(); URL.revokeObjectURL(a.href);
+  });
+
+  // Ver la web como un empleado (modo prueba: no se guarda nada)
+  $("preview-btn").addEventListener("click", () => {
+    mode = "preview"; currentCode = null; currentName = $("preview-as").value;
+    $("preview-bar").hidden = false;
+    runRedeem();
+  });
+  $("exit-preview").addEventListener("click", () => {
+    letterRun++; mode = "real"; $("preview-bar").hidden = true;
+    $("modal").hidden = true; $("basket").classList.remove("show");
+    openAdmin();
+  });
+
+  // Si el administrador recarga la página, vuelve al panel (sesión de la pestaña)
+  try {
+    const saved = sessionStorage.getItem("ascil_admin");
+    if (saved && !DEMO) { adminCode = saved; openAdmin(); }
+  } catch { /* sin almacenamiento */ }
 })();

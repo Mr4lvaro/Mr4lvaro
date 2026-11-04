@@ -1,19 +1,14 @@
 // Configuración editable de la campaña. No requiere tocar nada más.
-window.CONFIG = {
+const CONFIG = {
   company: "ASCIL Biopharm",
   pointsPerEmployee: 1000,
 
-  // Códigos de los sobres -> nombre de la persona (se usa en el mensaje final).
-  // Se validan sin distinguir mayúsculas ni guiones. Sustituir por los reales.
-  // En esta versión (sin servidor) se validan en el navegador (ver README).
-  codes: {
-    "ASCIL001": "Ana",
-    "ASCIL002": "Luis",
-    "ASCIL003": "Marta",
-    "ASCIL004": "Carlos",
-    "ASCIL005": "Lucía",
-    "NAVIDAD": "",
-  },
+  // Máximo de personas con vale (también lo limita la base de datos).
+  maxPeople: 26,
+
+  // Solo para probar sin servidor: abre la web con ?demo en la dirección (nada se guarda).
+  // Los códigos y nombres reales NO están aquí: viven en la base de datos (Supabase).
+  demoCodes: { "DEMO-01": "Ana", "DEMO-02": "Luis", "DEMO-03": "" },
 
   // Carta final: cada elemento es un párrafo que se va escribiendo a mano.
   // "signature" es opcional: déjalo vacío ("") para no firmar.
@@ -68,3 +63,7 @@ window.CONFIG = {
     { id: "p31", name: "Nestlé Caja Roja", detail: "Surtido de bombones · 198 g", cat: "dulces", gf: false, points: 100, img: "assets/products/p31.jpg" },
   ],
 };
+
+// En el navegador se usa como window.CONFIG; en el servidor (api/) se importa con require.
+if (typeof window !== "undefined") window.CONFIG = CONFIG;
+if (typeof module !== "undefined") module.exports = CONFIG;

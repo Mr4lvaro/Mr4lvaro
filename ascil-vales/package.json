@@ -1,0 +1,8 @@
+{
+  "name": "ascil-vales",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Vale de Navidad ASCIL Biopharm",
+  "scripts": { "dev": "node dev-server.js" },
+  "engines": { "node": ">=18" }
+}
