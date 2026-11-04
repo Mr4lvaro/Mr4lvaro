@@ -2,7 +2,8 @@
 <html lang="es">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#3b4fb4">
   <title>ASCIL Biopharm · Vale de Navidad</title>
   <link rel="icon" href="assets/logo.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -95,6 +96,7 @@
       </aside>
     </div>
 
+    <div class="drawer-backdrop" id="drawer-backdrop"></div>
     <button class="basket-fab" id="basket-fab" aria-label="Ver cesta">
       🧺 <span class="fab-count" id="fab-count">0</span>
       <span class="fab-pts" id="fab-pts">0 pts</span>
@@ -183,7 +185,7 @@
 
   <!-- Barra del modo prueba (administrador y código PRUEBA) -->
   <div class="preview-bar" id="preview-bar" hidden>
-    <span>👁 Modo prueba: no se guarda nada</span>
+    <span class="pb-text">👁 <span class="pb-long">Modo prueba: no se guarda nada</span></span>
     <button id="exit-preview" hidden>← Volver al panel</button>
     <button id="test-status" hidden>📋 Seguimiento</button>
     <button id="test-restart" hidden>↺ Empezar de nuevo</button>

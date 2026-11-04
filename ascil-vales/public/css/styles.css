@@ -29,7 +29,8 @@ body {
 
 /* ---------- Pantallas ---------- */
 .screen { display: none; min-height: 100vh; min-height: 100dvh; }
-.screen.active { display: flex; animation: screenIn .6s ease both; }
+/* "backwards": al terminar no queda ninguna transformación activa (si no, los elementos fixed de dentro se anclan a la pantalla y no al móvil) */
+.screen.active { display: flex; animation: screenIn .6s ease backwards; }
 @keyframes screenIn { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
 
 .card {
@@ -481,3 +482,106 @@ body.in-admin #snow { display: none; }
 .status-note { color: var(--muted); font-size: .85rem; margin-top: 12px; }
 #screen-status .filters { margin: 4px 0 12px; }
 .preview-bar { flex-wrap: wrap; max-width: calc(100vw - 24px); }
+
+/* ================= Ronda 6: optimización para móvil ================= */
+html { -webkit-text-size-adjust: 100%; }
+button, .chip, .product, select, input { touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+.drawer-backdrop { display: none; }
+body.drawer-open { overflow: hidden; }
+
+/* En pantallas táctiles no hay "hover": evita efectos que se quedan pegados al tocar */
+@media (hover: none) {
+  .product:hover, .chip:hover, .preset-btns button:hover, .btn-primary:hover { transform: none; }
+  .product:hover { box-shadow: 0 6px 20px rgba(42,60,140,.1); }
+}
+
+@media (max-width: 900px) {
+  /* Cajón de la cesta */
+  .drawer-backdrop { display: block; position: fixed; inset: 0; z-index: 85; background: rgba(10,21,80,.5); opacity: 0; pointer-events: none; transition: opacity .3s; }
+  .drawer-backdrop.show { opacity: 1; pointer-events: auto; }
+  .basket { max-height: 88dvh; padding-bottom: env(safe-area-inset-bottom); }
+  .basket-foot { padding-bottom: 18px; }
+  .basket-fab { bottom: calc(14px + env(safe-area-inset-bottom)); }
+  .shop-body { padding-bottom: calc(100px + env(safe-area-inset-bottom)); }
+  .close-basket { width: 40px; height: 40px; font-size: 1.05rem; }
+  .b-qty { gap: 8px; }
+  .b-qty button { width: 36px; height: 36px; font-size: 1.1rem; }
+  .b-item { padding: 8px 10px; }
+
+  /* La columna no puede ser más ancha que la pantalla */
+  .shop-body { grid-template-columns: minmax(0, 1fr); }
+  .catalog { min-width: 0; }
+
+  /* Filtros de la tienda en una sola fila deslizable */
+  #filters { flex-wrap: nowrap; overflow-x: auto; margin: 10px -14px 14px; padding: 4px 14px 8px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+  #filters::-webkit-scrollbar { display: none; }
+  .chip { flex: none; padding: 10px 16px; }
+  #filters .gf-chip { margin-left: 0; order: -1; }
+
+  /* Cestas preparadas más compactas */
+  .preset { padding: 12px 14px; gap: 10px; margin-top: 10px; }
+  .preset-text span { font-size: .8rem; }
+  .preset-btns { width: 100%; }
+  .preset-btns button { flex: 1 1 0; padding: 11px 8px; font-size: .82rem; }
+
+  .catalog h2 { font-size: 1.35rem; }
+  .shop-head { padding-top: calc(8px + env(safe-area-inset-top)); }
+  .product { padding: 10px; }
+  .product .p-name { font-size: .82rem; }
+  .product .p-detail { font-size: .68rem; }
+
+  /* Pantallas de código, canje y final */
+  .card { padding: 26px 20px; }
+  .logo { width: 190px; }
+  .code-card h1 { font-size: 1.35rem; }
+  .field input { padding: 14px; letter-spacing: .12em; }
+  .btn-primary, .btn-gold { padding: 15px 22px; }
+  #screen-code, #screen-done { padding-left: 14px; padding-right: 14px; }
+  #screen-done { padding-top: 70px; }
+  .modal-box { padding: 22px 18px; }
+  .modal-actions .btn { padding: 14px 10px; }
+
+  /* Barra del modo prueba: fina, arriba, sin tapar la tienda */
+  .preview-bar { left: 0; right: 0; top: 0; bottom: auto; max-width: none; border-radius: 0; justify-content: center; gap: 6px; flex-wrap: nowrap;
+    padding: calc(5px + env(safe-area-inset-top)) 8px 5px; font-size: .74rem; }
+  .preview-bar button { padding: 6px 11px; font-size: .74rem; white-space: nowrap; }
+  body:has(.preview-bar:not([hidden])) .screen { padding-top: calc(38px + env(safe-area-inset-top)); }
+  body:has(.preview-bar:not([hidden])) .shop-head { top: calc(38px + env(safe-area-inset-top)); }
+}
+@media (max-width: 440px) { .pb-long { display: none; } }
+
+/* Panel de administración y seguimiento en móvil: filas como tarjetas, sin scroll lateral */
+@media (max-width: 700px) {
+  .admin-wrap { padding: 14px 14px 60px; }
+  .admin-head { flex-wrap: wrap; gap: 10px; }
+  .admin-head h1 { flex: 1 1 140px; }
+  .admin-tools { flex-direction: column; }
+  .admin-btns { flex-direction: row; }
+  .admin-btns .btn { flex: 1; }
+  .preview-row select, .preview-row .btn { flex: 1 1 100%; }
+  .stat { padding: 12px 14px; }
+  .stat b { font-size: 1.35rem; }
+  #admin-table thead { display: none; }
+  #admin-table, #admin-table tbody, #admin-table tr, #admin-table td { display: block; }
+  #admin-table tr { display: grid; grid-template-columns: 1fr auto; gap: 6px 10px; padding: 12px 14px; border-bottom: 1px solid #eef0fa; }
+  #admin-table td { padding: 0; border: 0; background: none; }
+  #admin-table td:nth-child(1) { grid-area: 1 / 1; }
+  #admin-table td:nth-child(3) { grid-area: 1 / 2; text-align: right; }
+  #admin-table td:nth-child(2) { grid-area: 2 / 1; }
+  #admin-table td:nth-child(5) { grid-area: 2 / 2; text-align: right; font-weight: 700; color: var(--purple-dark); }
+  #admin-table td:nth-child(4) { grid-area: 3 / 1 / 4 / 3; max-width: none; font-size: .85rem; }
+  #admin-table tr.pending { background: #fffdf5; }
+  #admin-table td[colspan] { grid-column: 1 / -1; }
+  #admin-table small { display: inline; margin-left: 6px; }
+  .admin-table td, .admin-table th { padding-left: 12px; padding-right: 12px; }
+}
+@media (max-width: 360px) { .code-card h1 { font-size: 1.2rem; } .logo { width: 160px; } .preview-bar button { padding: 6px 8px; } }
+
+/* Móviles bajos (≈640 px de alto): el vale sube menos para no salirse de la pantalla */
+@media (max-height: 700px) {
+  @keyframes rise { to { transform: translateY(-96px) scale(1.04); } }
+  .envelope { margin-top: 0; margin-bottom: 0; }
+  .redeem-title { font-size: 1.35rem; }
+  .redeem-sub { font-size: .9rem; margin-bottom: 12px; }
+  .stage { padding-top: 24px; padding-bottom: 8px; }
+}

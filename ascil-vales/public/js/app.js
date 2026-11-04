@@ -179,7 +179,7 @@
   const count = () => [...cart.values()].reduce((a, b) => a + b, 0);
   const byId = (id) => products.find((p) => p.id === id);
   // Foto del producto si existe "img"; si no, el emoji
-  const pic = (p) => (p.img ? `<img src="${p.img}" alt="">` : p.emoji);
+  const pic = (p) => (p.img ? `<img src="${p.img}" alt="" loading="lazy" decoding="async">` : p.emoji);
   const picCls = (p) => (p.img ? "has-img" : "is-emoji");
 
   let activeCat = "all", onlyGF = false;
@@ -214,7 +214,7 @@
       renderBasket(pid);
       await wait(reduceMotion ? 0 : 260);
     }
-    if (matchMedia("(max-width: 900px)").matches) $("basket").classList.add("show");
+    if (matchMedia("(max-width: 900px)").matches) setDrawer(true);
     document.querySelectorAll("#preset button").forEach((b) => (b.disabled = false));
     presetBusy = false;
   }
@@ -361,8 +361,15 @@
     $("more").hidden = extra <= 0; $("more").textContent = `+${extra}`;
   }
 
-  $("basket-fab").addEventListener("click", () => $("basket").classList.add("show"));
-  $("close-basket").addEventListener("click", () => $("basket").classList.remove("show"));
+  // Cajón de la cesta (móvil): se abre desde abajo, con fondo oscuro y sin que se mueva la página
+  function setDrawer(open) {
+    $("basket").classList.toggle("show", open);
+    $("drawer-backdrop").classList.toggle("show", open);
+    document.body.classList.toggle("drawer-open", open);
+  }
+  $("basket-fab").addEventListener("click", () => setDrawer(true));
+  $("close-basket").addEventListener("click", () => setDrawer(false));
+  $("drawer-backdrop").addEventListener("click", () => setDrawer(false));
 
   /* ---------- Confirmación ---------- */
   $("checkout").addEventListener("click", () => {
@@ -390,7 +397,7 @@
       }
     }
     $("modal").hidden = true;
-    $("basket").classList.remove("show");
+    setDrawer(false);
 
     const greet = $("done-greeting");
     greet.textContent = currentName; greet.hidden = !currentName;
@@ -527,7 +534,7 @@
   });
   $("exit-preview").addEventListener("click", () => {
     letterRun++; mode = "real"; $("preview-bar").hidden = true;
-    $("modal").hidden = true; $("basket").classList.remove("show");
+    $("modal").hidden = true; setDrawer(false);
     openAdmin();
   });
 
@@ -548,7 +555,7 @@
 
   $("test-restart").addEventListener("click", () => {
     letterRun++; mode = "real"; testCode = null; cart.clear();
-    $("preview-bar").hidden = true; $("modal").hidden = true; $("basket").classList.remove("show");
+    $("preview-bar").hidden = true; $("modal").hidden = true; setDrawer(false);
     $("code-input").value = ""; $("code-error").textContent = "";
     show("screen-code");
   });
