@@ -459,3 +459,17 @@ body.in-admin #snow { display: none; }
 .admin-h2 { font-size: 1.1rem; color: var(--purple-dark); margin: 26px 0 10px; }
 .admin-error { color: var(--red); margin-top: 14px; }
 @media (max-width: 700px) { .admin-stats { grid-template-columns: repeat(2, 1fr); } .admin-head h1 { font-size: 1.15rem; } .head-logo { height: 38px; } }
+
+/* Cestas ya preparadas */
+.preset { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 18px; margin: 14px 0 6px; padding: 14px 18px;
+  border-radius: 18px; background: linear-gradient(135deg, #fff7e0, #fff); border: 1px solid #f2d99a; box-shadow: 0 6px 20px rgba(242,184,75,.2); }
+.preset[hidden] { display: none; }
+.preset-text { flex: 1; min-width: 220px; display: flex; flex-direction: column; gap: 2px; }
+.preset-text b { color: var(--purple-dark); }
+.preset-text span { font-size: .85rem; color: var(--muted); line-height: 1.35; }
+.preset-btns { display: flex; flex-wrap: wrap; gap: 8px; }
+.preset-btns button { font: inherit; font-weight: 700; font-size: .88rem; border: 0; cursor: pointer; padding: 10px 18px; border-radius: 99px;
+  color: #5b3b00; background: linear-gradient(135deg, #ffe29a, #f2b84b); box-shadow: 0 6px 16px rgba(242,184,75,.45); transition: transform .15s; }
+.preset-btns button:hover { transform: translateY(-2px); }
+.preset-btns button:disabled { opacity: .5; cursor: wait; }
+.preset-btns button:last-child { background: #e3f6ec; color: #0d7a43; box-shadow: none; }

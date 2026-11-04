@@ -183,8 +183,37 @@
 
   function startShop() {
     cart.clear(); activeCat = "all"; onlyGF = false;
-    renderFilters(); renderGrid(); renderBasket();
+    renderPresets(); renderFilters(); renderGrid(); renderBasket();
     show("screen-shop");
+  }
+
+  // Cestas ya preparadas: llenan la cesta con un clic (se puede cambiar antes de confirmar)
+  function renderPresets() {
+    const box = $("preset"), list = window.CONFIG.presetBaskets || [];
+    box.hidden = list.length === 0;
+    box.innerHTML = `<div class="preset-text"><b>¿Prefieres no elegir?</b><span>Te preparamos una cesta con un poco de todo, usando tus ${fmt(TOTAL)} puntos. Después puedes cambiarla.</span></div>
+      <div class="preset-btns">${list.map((b) => `<button type="button" data-preset="${b.id}">${b.emoji} ${b.name}</button>`).join("")}</div>`;
+    box.querySelectorAll("button").forEach((btn) => btn.addEventListener("click", () => applyPreset(btn.dataset.preset)));
+  }
+
+  let presetBusy = false;
+  async function applyPreset(id) {
+    const preset = window.CONFIG.presetBaskets.find((b) => b.id === id);
+    if (!preset || presetBusy) return;
+    presetBusy = true;
+    document.querySelectorAll("#preset button").forEach((b) => (b.disabled = true));
+    cart.clear(); activeCat = "all"; onlyGF = false;
+    renderFilters(); renderGrid();            // todos los productos visibles, cesta vacía
+    for (const { id: pid, qty } of preset.items) {
+      cart.set(pid, qty);
+      const card = document.querySelector(`.product[data-id="${pid}"]`);
+      if (card) fly(card.querySelector(".thumb"));
+      renderBasket(pid);
+      await wait(reduceMotion ? 0 : 260);
+    }
+    if (matchMedia("(max-width: 900px)").matches) $("basket").classList.add("show");
+    document.querySelectorAll("#preset button").forEach((b) => (b.disabled = false));
+    presetBusy = false;
   }
 
   function renderFilters() {

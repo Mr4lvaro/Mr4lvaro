@@ -19,6 +19,17 @@ const CONFIG = {
   ],
   signature: "ASCIL Biopharm 🎄🌟",
 
+  // Cestas ya preparadas para quien no quiere elegir (cada una suma los 1.000 puntos).
+  // Se rellenan con un clic y la persona aún puede cambiarlas antes de confirmar.
+  presetBaskets: [
+    { id: "sorpresa", name: "Cesta sorpresa", emoji: "🎁",
+      text: "Un poco de todo: vino, cava, jamón, quesos y dulces navideños.",
+      items: [{ id: "p03", qty: 1 }, { id: "p05", qty: 1 }, { id: "p06", qty: 1 }, { id: "p14", qty: 1 }, { id: "p18", qty: 1 }, { id: "p20", qty: 1 }, { id: "p31", qty: 1 }] },
+    { id: "sin-gluten", name: "Cesta sin gluten", emoji: "🌾",
+      text: "La misma idea, con todos los productos aptos para celíacos.",
+      items: [{ id: "p03", qty: 1 }, { id: "p05", qty: 1 }, { id: "p06", qty: 1 }, { id: "p14", qty: 1 }, { id: "p18", qty: 1 }, { id: "p20", qty: 1 }, { id: "p15", qty: 1 }] },
+  ],
+
   // Categorías del catálogo (en el orden en que aparecen en los filtros)
   categories: [
     { id: "bodega",   name: "Bodega" },
