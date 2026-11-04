@@ -94,7 +94,7 @@
         currentCode = code; currentName = demoMap.get(code) || "";
         return runRedeem();
       }
-      const r = await api("/api/login", { body: { code } });
+      const r = await api("api/login", { body: { code } });
       if (r.ok && r.data.admin) { adminCode = input.value; keepAdmin(adminCode); return openAdmin(); }
       if (r.ok) { currentCode = code; currentName = r.data.name || ""; mode = "real"; return runRedeem(); }
       if (r.status === 409) return fail("Este código ya se ha canjeado: tu selección está confirmada. ¡Gracias!");
@@ -347,7 +347,7 @@
     err.hidden = true;
     if (mode === "real") {
       ok.disabled = true; ok.textContent = "Guardando…";
-      const r = await api("/api/order", { body: { code: currentCode, items: [...cart].map(([id, qty]) => ({ id, qty })) } });
+      const r = await api("api/order", { body: { code: currentCode, items: [...cart].map(([id, qty]) => ({ id, qty })) } });
       ok.disabled = false; ok.textContent = "Sí, confirmar";
       if (!r.ok) {
         err.textContent = r.status === 409 ? "Este código ya tiene una selección confirmada."
@@ -418,7 +418,7 @@
 
   async function loadAdmin() {
     $("admin-error").textContent = "";
-    const r = await api("/api/admin", { method: "GET", admin: adminCode });
+    const r = await api("api/admin", { method: "GET", admin: adminCode });
     if (!r.ok) {
       if (r.status === 401) { forgetAdmin(); adminCode = null; show("screen-code"); return; }
       $("admin-error").textContent = "No se han podido cargar los datos. Pulsa Actualizar para reintentar.";
