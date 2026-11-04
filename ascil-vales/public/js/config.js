@@ -62,7 +62,7 @@ const CONFIG = {
     { id: "p14", name: "Tabla de quesos", detail: "Obrador de Quesos · selección 150 g", cat: "mesa", gf: true, points: 130, img: "assets/products/p14.jpg" },
     { id: "p15", name: "Parmigiano Reggiano D.O.P.", detail: "Cuña 200 g", cat: "mesa", gf: true, points: 100, img: "assets/products/p15.jpg" },
     { id: "p16", name: "Rulo de queso de cabra", detail: "Gourmet · 180 g", cat: "mesa", gf: true, points: 80, img: "assets/products/p16.jpg" },
-    { id: "p17", name: "Aceite Dauliba", detail: "Aceite de oliva virgen extra de Arbequina sin hueso · 50 cl", cat: "mesa", gf: true, points: 180, img: "assets/products/p17.jpg" },
+    { id: "p17", name: "Aceite Dauliba", detail: "Aceite de oliva virgen extra de Arbequina sin hueso · 50 cl", cat: "mesa", gf: true, points: 260, img: "assets/products/p17.jpg" },
     { id: "p18", name: "Turrón artesano Vicens", detail: "Duro o blando · 200 g", cat: "turrones", gf: true, points: 150, img: "assets/products/p18.jpg" },
     { id: "p19", name: "Turrón de yema Vicens", detail: "Yema tostada · 200 g", cat: "turrones", gf: true, points: 150, img: "assets/products/p19.jpg" },
     { id: "p20", name: "Turrón El Almendro duro", detail: "Calidad suprema · 250 g", cat: "turrones", gf: true, points: 80, img: "assets/products/p20.jpg" },
