@@ -469,7 +469,9 @@
   }
 
   function renderAdmin() {
-    const { people, maxPeople } = adminData;
+    const { maxPeople } = adminData;
+    const people = adminData.people.filter((p) => !p.is_test);   // las 26 de verdad
+    const testers = adminData.people.filter((p) => p.is_test);   // personas de prueba: aparte, no cuentan
     const done = people.filter((p) => p.order), pending = people.filter((p) => !p.order);
     const pts = done.reduce((s, p) => s + p.order.total_points, 0);
 
@@ -503,6 +505,20 @@
     $("admin-products").tBodies[0].innerHTML = rows.map((r) => `<tr><td>${esc(r.name)}</td><td class="r">${r.qty}</td><td class="r">${fmt(r.points)}</td></tr>`).join("")
       || '<tr><td colspan="3" class="empty">Todavía no hay pedidos.</td></tr>';
 
+    // Persona de prueba: sirve para comprobar que el envío se guarda. Se puede reiniciar para repetir.
+    $("admin-test").innerHTML = testers.length ? testers.map((p) => `<div class="test-card">
+        <div class="tc-main"><b>🧪 ${esc(p.full_name)}</b><code>${esc(p.code)}</code>
+          ${p.order ? `<span class="badge ok">✔ Pedido guardado</span><small>${when(p.order.created_at)}</small>` : '<span class="badge wait">Sin pedido</span>'}</div>
+        <div class="tc-items">${p.order ? `${esc(itemsText(p.order))} · <b>${fmt(p.order.total_points)} pts</b>` : "Entra con este código para hacer un pedido de prueba y ver aquí que se guarda."}</div>
+        ${p.order ? `<button class="btn btn-ghost small" data-reset="${p.id}">↺ Reiniciar pedido de prueba</button>` : ""}</div>`).join("")
+      : '<p class="status-note">No hay ninguna persona de prueba en la base de datos.</p>';
+    $("admin-test").querySelectorAll("[data-reset]").forEach((b) => b.addEventListener("click", async () => {
+      b.disabled = true;
+      const r = await api("api/admin", { admin: adminCode, body: { action: "reset", id: Number(b.dataset.reset) } });
+      if (!r.ok) $("admin-error").textContent = "No se ha podido reiniciar el pedido de prueba.";
+      await loadAdmin();
+    }));
+
     $("preview-as").innerHTML = '<option value="">Empleado de prueba (sin nombre)</option>' +
       people.map((p) => `<option value="${esc(p.first_name)}">${esc(p.full_name)}</option>`).join("");
   }
@@ -513,7 +529,7 @@
     if (!adminData) return;
     const cell = (t) => `"${String(t ?? "").replace(/"/g, '""')}"`;
     const lines = [["Nombre", "Código", "Estado", "Fecha", "Pedido", "Puntos", "Notas"].map(cell).join(";")];
-    adminData.people.forEach((p) => lines.push([p.full_name, p.code, p.order ? "Hecho" : "Pendiente", p.order ? when(p.order.created_at) : "",
+    adminData.people.filter((p) => !p.is_test).forEach((p) => lines.push([p.full_name, p.code, p.order ? "Hecho" : "Pendiente", p.order ? when(p.order.created_at) : "",
       p.order ? itemsText(p.order) : "", p.order ? p.order.total_points : "", p.notes || ""].map(cell).join(";")));
     const a = document.createElement("a");
     a.href = URL.createObjectURL(new Blob(["\ufeff" + lines.join("\r\n")], { type: "text/csv;charset=utf-8" }));

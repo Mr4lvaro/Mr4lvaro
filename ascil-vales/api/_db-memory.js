@@ -23,7 +23,8 @@ const candidates = [process.env.SEED_FILE, path.join(__dirname, "../private/empl
 const found = candidates.find((f) => fs.existsSync(f));
 if (found) seed = found.endsWith(".csv") ? parseCsv(fs.readFileSync(found, "utf8")) : JSON.parse(fs.readFileSync(found, "utf8"));
 
-const employees = seed.map((e, i) => ({ id: i + 1, notes: "", ...e }));
+const employees = seed.map((e, i) => ({ id: i + 1, notes: "", is_test: false, ...e }));
+if (!employees.some((e) => e.is_test)) employees.push({ id: employees.length + 1, full_name: "Persona Fake (prueba)", first_name: "Fake", code: "FAKE-01", notes: "Persona de prueba", is_test: true });
 const orders = new Map(); // employee_id -> pedido
 
 module.exports = {
@@ -34,5 +35,6 @@ module.exports = {
     orders.set(employee_id, { items, total_points, created_at: new Date().toISOString() });
     return { ok: true };
   },
+  async resetOrder(id) { orders.delete(id); },
   async listAll() { return employees.map((e) => ({ ...e, order: orders.get(e.id) || null })); },
 };

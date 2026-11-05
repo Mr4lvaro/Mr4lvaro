@@ -8,6 +8,7 @@ create table if not exists public.employees (
   code       text not null unique,        -- código del sobre, p. ej. RAT-13
   code_norm  text generated always as (upper(regexp_replace(code, '[^A-Za-z0-9]', '', 'g'))) stored unique,
   notes      text,                        -- alergias / observaciones (solo las ve el administrador)
+  is_test    boolean not null default false,  -- persona de prueba: no cuenta entre las 26
   created_at timestamptz not null default now()
 );
 
@@ -19,10 +20,10 @@ create table if not exists public.orders (
   created_at   timestamptz not null default now()
 );
 
--- Máximo 26 personas
+-- Máximo 26 personas (las de prueba no cuentan)
 create or replace function public.limit_employees() returns trigger language plpgsql as $$
 begin
-  if (select count(*) from public.employees) >= 26 then
+  if not new.is_test and (select count(*) from public.employees where not is_test) >= 26 then
     raise exception 'La web está limitada a 26 personas';
   end if;
   return new;

@@ -604,3 +604,11 @@ body.drawer-open { overflow: hidden; }
 .product:hover, .chip:hover, .btn-primary:hover, .preset-btns button:hover { transform: none; }
 .points-text strong, .points-text strong.bump { transform: none; transition: none; }
 .bar-fill { transition: none; }
+
+/* Persona de prueba en el panel */
+.test-card { background: #fff; border: 2px dashed #b9b7e3; border-radius: 16px; padding: 14px 16px; display: flex; flex-direction: column; gap: 8px; }
+.tc-main { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
+.tc-main code { background: #eef1ff; color: var(--purple-dark); padding: 3px 8px; border-radius: 8px; font-weight: 700; }
+.tc-main small { color: var(--muted); }
+.tc-items { color: #444a7a; font-size: .9rem; line-height: 1.45; }
+.test-card .btn { align-self: flex-start; }

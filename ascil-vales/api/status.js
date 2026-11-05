@@ -7,7 +7,7 @@ module.exports = async (req, res) => {
   try {
     if (tooManyAttempts(req)) return send(res, 429, { error: "too_many" });
     if (!isTestCode(req.headers["x-test-code"])) { registerFailure(req); return send(res, 401, { error: "unauthorized" }); }
-    const people = (await getDb().listAll()).map((p) => ({ name: p.full_name, sent: Boolean(p.order) }));
+    const people = (await getDb().listAll()).filter((p) => !p.is_test).map((p) => ({ name: p.full_name, sent: Boolean(p.order) }));
     return send(res, 200, { ok: true, people });
   } catch (e) {
     console.error("status", e);

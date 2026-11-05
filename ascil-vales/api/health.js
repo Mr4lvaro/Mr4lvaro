@@ -26,10 +26,12 @@ module.exports = async (req, res) => {
 
   if (url && key) {
     try {
-      const r = await fetch(`${url.replace(/\/$/, "")}/rest/v1/employees?select=id`, { headers: { apikey: key, Authorization: `Bearer ${key}` } });
+      const r = await fetch(`${url.replace(/\/$/, "")}/rest/v1/employees?select=id,is_test`, { headers: { apikey: key, Authorization: `Bearer ${key}` } });
       out.supabase_status = r.status;
       if (r.ok) {
-        out.empleados = (await r.json()).length;
+        const rows = await r.json();
+        out.empleados = rows.filter((e) => !e.is_test).length;
+        out.personas_de_prueba = rows.filter((e) => e.is_test).length;
         if (out.empleados !== 26) out.problemas.push(`En la tabla employees hay ${out.empleados} personas (deberían ser 26). ¿Se ejecutó el SQL completo?`);
       } else if (r.status === 401 || r.status === 403) out.problemas.push("Supabase rechaza la clave (401/403): revisa que sea la service_role y esté bien copiada, sin espacios.");
       else if (r.status === 404) out.problemas.push("Supabase responde 404: la tabla employees no existe (ejecuta el SQL) o la URL es de otro proyecto.");

@@ -32,8 +32,12 @@ module.exports = {
     if (!r.ok) throw new Error(`Supabase ${r.status}`);
     return { ok: true };
   },
+  async resetOrder(employeeId) {
+    const r = await rest(`/orders?employee_id=eq.${Number(employeeId)}`, { method: "DELETE", headers: { Prefer: "return=minimal" } });
+    if (!r.ok) throw new Error(`Supabase ${r.status}`);
+  },
   async listAll() {
-    const r = await rest("/employees?select=id,full_name,first_name,code,notes,orders(items,total_points,created_at)&order=id.asc");
+    const r = await rest("/employees?select=id,full_name,first_name,code,notes,is_test,orders(items,total_points,created_at)&order=id.asc");
     if (!r.ok) throw new Error(`Supabase ${r.status}`);
     return r.data.map((e) => {
       const o = Array.isArray(e.orders) ? e.orders[0] : e.orders;
